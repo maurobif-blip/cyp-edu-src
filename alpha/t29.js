@@ -1,0 +1,25 @@
+const { chromium, devices } = require('playwright');
+(async () => {
+  const b = await chromium.launch(); const errs = [];
+  const mk = async (opt) => { const ctx = await b.newContext(opt); const p = await ctx.newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); p.on('dialog', d => d.accept()); await p.goto('file:///home/claude/demo/cicetekelo-records-DEMO.html'); await p.waitForTimeout(400); return p; };
+  const q = await mk({ viewport: { width: 1440, height: 900 } });
+  console.log('login tiles', await q.evaluate(() => [...document.querySelectorAll('.stile')].slice(0, 4).map(x => x.innerText.replace(/\n/g, ' '))));
+  await q.click('.stile:has-text("Clement")'); await q.waitForTimeout(300);
+  const go = async (p, h) => { await p.evaluate(h => location.hash = h, h); await p.waitForTimeout(450); };
+  console.log('user', await q.evaluate(() => USER && USER.name + ' admin=' + USER.admin));
+  console.log('abs', await q.evaluate(() => JSON.stringify([absSet(), absenceList().map(x => [x.c.section, x.run, x.days, x.long])])));
+  await go(q, '#/attendance?c=Nkwazi'); await q.screenshot({ path: 'shots/D-att-nkz.png', fullPage: true });
+  await go(q, '#/pending'); await q.screenshot({ path: 'shots/D-todo.png' });
+  await go(q, '#/paths?ps=Nkwazi'); await q.screenshot({ path: 'shots/D-paths.png', fullPage: true });
+  const lk = await q.evaluate(() => S.children.find(c => c.section === 'Nkwazi' && movesOf(c.id).some(m => m.type === 'section')).id);
+  await go(q, '#/child/' + lk); await q.screenshot({ path: 'shots/D-child-path.png' });
+  await go(q, '#/staff'); console.log('absence form', await q.evaluate(() => !!document.querySelector('form[data-form=absence]')));
+  await q.fill('form[data-form=absence] input[name=alert]', '3'); await q.fill('form[data-form=absence] input[name=review]', '20'); await q.click('form[data-form=absence] button'); await q.waitForTimeout(300);
+  console.log('abs after', await q.evaluate(() => JSON.stringify([absSet(), absenceList().length, absenceList().filter(x => x.long).length])));
+  const ph = await mk({ ...devices['Pixel 5'] }); await ph.tap('.stile:has-text("Clement")'); await ph.waitForTimeout(300);
+  await go(ph, '#/child/' + lk); await ph.screenshot({ path: 'shots/D-ph-child.png', fullPage: true });
+  await go(ph, '#/paths?ps=Nkwazi'); await ph.screenshot({ path: 'shots/D-ph-paths.png' });
+  console.log('phone overflow', await ph.evaluate(() => document.documentElement.scrollWidth - innerWidth));
+  await go(ph, '#/attendance?c=Nkwazi'); console.log('phone overflow att', await ph.evaluate(() => document.documentElement.scrollWidth - innerWidth));
+  console.log('errors', errs.slice(0, 6)); await b.close();
+})();

@@ -1,0 +1,20 @@
+const { chromium, devices } = require('playwright');
+(async () => {
+  const b = await chromium.launch(); const errs = [];
+  const p = await (await b.newContext({ ...devices['Pixel 5'], acceptDownloads: true })).newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
+  await p.goto('file:///home/claude/demo/cicetekelo-records-DEMO.html'); await p.waitForTimeout(900); await p.tap('.stile:has-text("Pippen")'); await p.waitForTimeout(400);
+  const go = async h => { await p.evaluate(h => location.hash = h, h); await p.waitForTimeout(450); };
+  await go('#/activities?t=enrol'); console.log('enrol empty', await p.evaluate(() => [document.querySelector('.seg a.on').innerText, document.querySelector('#actlist').innerText]));
+  await p.fill('#actsearch', 'ban'); await p.waitForTimeout(250);
+  console.log('disciplines', await p.evaluate(() => [...document.querySelector('#actlist .qrow').querySelectorAll('[data-act=actenrol]')].map(x => x.innerText)));
+  await p.tap('#actlist .qrow [data-a="Golf"]'); await p.waitForTimeout(200); await p.tap('#actlist .qrow [data-a="Handicraft"]'); await p.waitForTimeout(200);
+  await p.tap('#actlist .qrow:nth-child(2) [data-a="Golf"]'); await p.waitForTimeout(200);
+  console.log('enrolled', await p.evaluate(() => [S.children.filter(c => (c.activities || []).length).map(c => c.activities.join('+')), document.querySelector('#actsearch').value, [...document.querySelectorAll('#actlist .btn.pri')].map(x => x.innerText)])); await p.screenshot({ path: 'shots/E1.png' });
+  await p.fill('#actsearch', ''); await p.waitForTimeout(250); console.log('list without search', await p.evaluate(() => document.querySelectorAll('#actlist .qrow').length));
+  await go('#/activities?a=Golf'); console.log('golf attendance', await p.evaluate(() => [document.querySelector('.qchips a.on').innerText, document.querySelectorAll('#actlist .qrow').length, document.querySelector('.qcount').innerText.replace(/\n/g, ' | ')]));
+  await p.tap('#actlist .qmain'); await p.waitForTimeout(300); await p.fill('#actsearch', 'mwa'); await p.waitForTimeout(250); await p.tap('#actlist .qmain'); await p.waitForTimeout(300);
+  console.log('after marking a new child', await p.evaluate(() => [document.querySelector('.qcount').innerText.replace(/\n/g, ' | '), document.querySelectorAll('#actlist .qrow').length, S.children.filter(c => (c.activities || []).includes('Golf')).length]));
+  const id = await p.evaluate(() => S.children.find(c => (c.activities || []).length > 1).id); await go('#/child/' + id); console.log('profile', await p.evaluate(() => (document.body.innerText.match(/Activities\s*\n?\s*[^\n]+/) || [])[0]));
+  await go('#/activities?t=enrol'); const [dl] = await Promise.all([p.waitForEvent('download'), p.tap('[data-act=actxl]')]); console.log('xl', dl.suggestedFilename());
+  console.log('errors', errs.slice(0, 5)); await b.close();
+})();

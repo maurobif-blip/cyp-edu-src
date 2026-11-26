@@ -1,0 +1,17 @@
+const { chromium } = require('playwright'); const fs = require('fs'); const SP = '/tmp/cyp-shots/';
+(async () => {
+  const b = await chromium.launch(); const errs = []; const p = await (await b.newContext({ viewport: { width: 393, height: 850 }, deviceScaleFactor: 2 })).newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('dialog', x => x.accept());
+  await p.goto('file:///home/claude/alpha/cicetekelo-records-alpha.html'); await p.waitForTimeout(700); await p.click('.stile:has-text("Clement")'); await p.fill('#pinin', require('/home/claude/cyp-edu-src/alpha/pin.js')); await p.click('form[data-form=pinlogin] button.pri'); await p.waitForTimeout(400);
+  await p.evaluate(pk => { importStarterPack(pk); save(); }, JSON.parse(fs.readFileSync('/home/claude/reports/pack-v3-nophotos.json', 'utf8'))); await p.waitForTimeout(700);
+  const go = async h => { await p.evaluate(h => location.hash = h, h); await p.waitForTimeout(450); };
+  /* drawn faces instead of real photos */
+  await p.evaluate(() => { const kids = S.children.filter(c => c.section === 'Luigi' && c.status !== 'Closed').sort((a, b) => fullName(a).localeCompare(fullName(b))); kids.slice(0, 6).forEach((c, i) => { if (i % 3 === 2) return; const cv = document.createElement('canvas'); cv.width = cv.height = 120; const g = cv.getContext('2d'); g.fillStyle = ['#D9B38C', '#8CB3D9', '#B3D98C', '#D98CB3'][i % 4]; g.fillRect(0, 0, 120, 120); g.fillStyle = '#5A3E2B'; g.beginPath(); g.arc(60, 50, 26, 0, 7); g.fill(); g.fillRect(28, 82, 64, 40); photos()[c.id] = cv.toDataURL('image/jpeg', 0.8); }); save(); });
+  await go('#/children?section=Luigi'); await p.evaluate(() => document.querySelector('#childTable').scrollIntoView()); await p.waitForTimeout(300);
+  console.log('phone list', await p.evaluate(() => { const rows = [...document.querySelectorAll('#childTable tbody tr')].slice(0, 6); return rows.map(r => { const ph = r.querySelector('td.ph > *'), b = ph.getBoundingClientRect(), n = r.querySelector('a.cname').getBoundingClientRect(); return [ph.tagName, Math.round(b.width), Math.round(innerWidth - b.right), b.left > n.right]; }); }), 'fits', await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+  await p.screenshot({ path: SP + 'kids-phone.png' });
+  await p.click('#childTable tbody tr td.ph img'); await p.waitForTimeout(300); console.log('tap on the photo enlarges, page stays', await p.evaluate(() => [!!document.getElementById('phbox'), location.hash])); await p.keyboard.press('Escape');
+  await p.click('#childTable tbody tr a.cname'); await p.waitForTimeout(300); console.log('tap on the name opens the file', await p.evaluate(() => location.hash.slice(0, 8)));
+  await p.setViewportSize({ width: 1440, height: 900 }); await go('#/children?section=Luigi'); console.log('computer: last column', await p.evaluate(() => { const r = document.querySelector('#childTable tbody tr'); const td = r.lastElementChild; return [td.className, Math.round(td.firstElementChild.getBoundingClientRect().width), document.documentElement.scrollWidth <= innerWidth + 1]; }));
+  await p.setViewportSize({ width: 393, height: 850 }); await go('#/attendance?c=Minsundu&g=UCC&d=' + await p.evaluate(() => addDays(today(), -2))); await p.screenshot({ path: SP + 'day-other.png' });
+  console.log('errors', errs); await b.close();
+})().catch(e => { console.error('FAIL', e.message.slice(0, 500)); process.exit(1); });

@@ -1,0 +1,25 @@
+const { chromium, devices } = require('playwright');
+(async () => {
+  const b = await chromium.launch(); const errs = [];
+  const mk = async (opt, who) => { const ctx = await b.newContext(opt); const p = await ctx.newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); p.on('dialog', d => d.accept()); await p.goto('file:///home/claude/demo/cicetekelo-records-DEMO.html'); await p.waitForTimeout(900); if (opt.isMobile) await p.tap(`.stile:has-text("${who}")`); else await p.click(`.stile:has-text("${who}")`); await p.waitForTimeout(400); return p; };
+  const go = async (p, h) => { await p.evaluate(h => location.hash = h, h); await p.waitForTimeout(450); };
+  const q = await mk({ viewport: { width: 1440, height: 900 } }, 'Clement');
+  await go(q, '#/attendance?c=Nkwazi&av=day');
+  console.log('button', await q.evaluate(() => document.querySelector('#fbbtn') && document.querySelector('#fbbtn').innerText));
+  await q.click('#fbbtn'); await q.waitForTimeout(150); const hashBefore = await q.evaluate(() => location.hash);
+  await q.click('nav.nav a:has-text("Children")'); await q.waitForTimeout(200);
+  console.log('nav click captured', await q.evaluate(h => [location.hash === h, !!document.querySelector('#fbbox'), document.querySelector('.fbq').innerText], hashBefore));
+  await q.fill('#fbnote', 'Use "Pupils" here'); await q.click('#fbsave'); await q.waitForTimeout(300);
+  await q.click('#fbbtn'); await q.click('h1'); await q.waitForTimeout(200); await q.screenshot({ path: 'shots/F1.png' }); await q.fill('#fbnote', 'Second comment'); await q.click('#fbsave'); await q.waitForTimeout(300);
+  console.log('saved', await q.evaluate(() => S.feedback.map(x => [x.page, x.text, x.note, x.by, x.v])));
+  console.log('mode off, normal click works', await q.evaluate(() => UI.fbMode), await (async () => { await q.click('nav.nav a:has-text("Children")'); await q.waitForTimeout(300); return q.evaluate(() => location.hash); })());
+  await go(q, '#/staff'); console.log('admin card', await q.evaluate(() => { const s = [...document.querySelectorAll('section.card')].find(x => /Comments on the app/.test(x.innerText)); return s ? s.innerText.replace(/\n/g, ' | ').slice(0, 260) : null; }));
+  await go(q, '#/feedback'); console.log('page', await q.evaluate(() => [document.querySelector('.lead').innerText, document.querySelectorAll('.main tbody tr').length])); await q.screenshot({ path: 'shots/F2.png' });
+  await q.click('[data-act=fbdone]'); await q.waitForTimeout(300); console.log('after done', await q.evaluate(() => [document.querySelector('.lead').innerText, S.feedback.length, fbText(fbList().filter(x => !x.done))]));
+  await go(q, '#/staff'); await q.click('[data-act=fball]'); await q.waitForTimeout(300); console.log('all staff', await q.evaluate(() => S.settings.feedbackAll));
+  await q.evaluate(() => { S.settings.feedbackAll = false; save(); });
+  const p2 = await mk({ ...devices['Pixel 5'] }, 'Chisha'); console.log('non admin has button', await p2.evaluate(() => !!document.querySelector('#fbbtn')));
+  const p3 = await mk({ ...devices['Pixel 5'] }, 'Clement'); await go(p3, '#/attendance?c=Nkwazi'); await p3.tap('#fbbtn'); await p3.waitForTimeout(400); await p3.tap('.qrow .cyp-row__text b'); await p3.waitForTimeout(250);
+  console.log('phone: tap on a name in comment mode does not mark', await p3.evaluate(() => [!!document.querySelector('#fbbox'), Object.keys(S.attendance[today()] || {}).length, document.querySelector('.fbq').innerText.slice(0, 60)])); await p3.screenshot({ path: 'shots/F3.png' });
+  console.log('errors', errs.slice(0, 5)); await b.close();
+})();

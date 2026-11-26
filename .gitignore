@@ -1,0 +1,12 @@
+# private: never in the repository
+local/
+# built files (made by the build scripts)
+alpha/cicetekelo-records-alpha.html
+demo/cicetekelo-records-DEMO.html
+web/cyp-edu/
+# working leftovers
+*.bak*
+*.b1[0-9]
+*.png
+node_modules/
+!ds2/**/*.png

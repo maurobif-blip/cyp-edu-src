@@ -1,0 +1,80 @@
+const { chromium } = require('playwright'); const fs = require('fs'); const { start } = require('/home/claude/server/mock.js');
+const PORT = 8815, LINK = `http://127.0.0.1:${PORT}/exec?k=K`;
+(async () => {
+  const mock = await start(PORT, 'K'); const b = await chromium.launch(); const errs = [];
+  const mk = async (name, vw) => { const ctx = await b.newContext({ viewport: { width: vw || 1440, height: 900 } }); const p = await ctx.newPage(); await p.addInitScript(() => { new MutationObserver(() => { const d = document.getElementById('dlg'); if (!d || d.dataset.auto) return; d.dataset.auto = '1'; setTimeout(() => { const t = d.querySelector('textarea'); if (t) t.value = 'Written by mistake'; d.querySelector('.ok').click(); }, 60); }).observe(document, { childList: true, subtree: true }); }); p.on('pageerror', e => errs.push(name + ': ' + e.message)); p.on('dialog', x => x.type() === 'prompt' ? x.accept('Written by mistake') : x.accept()); await p.goto('file:///home/claude/alpha/cicetekelo-records-alpha.html'); await p.waitForTimeout(700); await p.click('.stile:has-text("Clement")'); await p.fill('#pinin', require('/home/claude/cyp-edu-src/alpha/pin.js')); await p.click('form[data-form=pinlogin] button.pri'); await p.waitForTimeout(400); return p; };
+  const go = async (p, h) => { await p.evaluate(h => location.hash = h, h); await p.waitForTimeout(450); };
+  const as = (p, w) => p.evaluate(w => { USER = S.staff.find(s => s.name.includes(w)); render(); return USER.name; }, w);
+  const sync = async (...ps) => { for (const p of ps) { await p.evaluate(() => syncNow()); await p.waitForTimeout(1600); } };
+  const A = await mk('A');
+  await A.evaluate(pk => { importStarterPack(pk); save(); }, JSON.parse(fs.readFileSync('/home/claude/reports/pack-v3-nophotos.json', 'utf8'))); await A.waitForTimeout(600);
+  await go(A, '#/sync'); await A.fill('form[data-form=synclink] [name=link]', LINK); await A.click('form[data-form=synclink] button'); await A.waitForTimeout(700); await A.click('[data-sact=start]'); await A.waitForTimeout(2500);
+  const B = await mk('B', 393);
+  await go(B, '#/sync'); await B.fill('form[data-form=synclink] [name=link]', LINK); await B.click('form[data-form=synclink] button'); await B.waitForTimeout(900); await B.click('[data-sact=load]'); await B.waitForTimeout(2500);
+  console.log('version', await A.evaluate(() => VERSION));
+  /* ---- 1. in transit ---- */
+  const kid = await A.evaluate(() => S.children.find(c => isCurrent(c) && c.section === 'UCC' && c.residence === 'Resident').id);
+  const before = await A.evaluate(() => REPORTS.UCC.rows(thisMonth())[0][2]);
+  await go(A, '#/child/' + kid + '/status'); await A.selectOption('form[data-form=resid] [name=to]', 'In transit'); await A.click('form[data-form=resid] button.pri'); await A.waitForTimeout(500);
+  console.log('1 residence', await A.evaluate(id => child(id).residence, kid), '| history', await A.evaluate(() => (document.body.innerText.match(/Now in transit/) || ['no line'])[0]));
+  console.log('1 report UCC cols', await A.evaluate(() => REPORTS.UCC.cols.join(' / ')), 'first row before', before, 'after', await A.evaluate(() => REPORTS.UCC.rows(thisMonth())[0][2]));
+  await go(A, '#/attendance?c=Minsundu&g=UCC'); console.log('1 on the UCC register', await A.evaluate(id => { const c = child(id); return [attIn(c, 'Minsundu', 'UCC'), attIn(c, 'Minsundu', 'Non-resident'), attOpts(c, 'Minsundu').map(x => x[0]).join(''), /In transit/.test(document.querySelector('main').innerText)]; }, kid));
+  await go(A, '#/home?f=tra'); console.log('1 home filter', await A.evaluate(() => [document.querySelector('.seg a.on').innerText, document.querySelector('.big').innerText]));
+  await go(A, '#/children?res=In transit&status=current'); console.log('1 children filter rows', await A.evaluate(() => document.querySelectorAll('tbody tr').length));
+  await go(A, '#/paths?ps=Minsundu&pr=In transit'); console.log('1 admissions page', await A.evaluate(() => [document.querySelector('h1').innerText, document.querySelectorAll('table.mt tbody tr').length]));
+  await go(A, '#/child/new'); console.log('1 new child options', await A.evaluate(() => [...document.querySelector('[name=residence]').options].map(o => o.value).join(' | ')));
+  await go(A, '#/logframe'); console.log('1 logframe', await A.evaluate(() => (document.querySelector('main').innerText.match(/in transit \d+/g) || []).join(', ')));
+  /* ---- 2. cancel a move: the child goes back to what it was ---- */
+  await go(A, '#/child/' + kid); console.log('2 cancel buttons in the history', await A.evaluate(() => document.querySelectorAll('[data-dact=cancelrec]').length));
+  await A.click('[data-dact=cancelrec][data-kind=move]'); await A.waitForTimeout(500);
+  console.log('2 after cancel: residence', await A.evaluate(id => child(id).residence, kid), '| history', await A.evaluate(() => (document.querySelector('main').innerText.match(/Cancelled[^\n]*\n[^\n]*/) || [''])[0].replace(/\n/g, ' | ')));
+  await go(A, '#/child/' + kid + '/status'); await A.selectOption('form[data-form=close] [name=reason]', { index: 1 }); await A.click('form[data-form=close] button'); await A.waitForTimeout(500);
+  console.log('2 closed', await A.evaluate(id => [child(id).status, child(id).closeDate], kid)); await go(A, '#/child/' + kid); await A.click('[data-dact=cancelrec][data-kind=move]'); await A.waitForTimeout(500);
+  console.log('2 close cancelled', await A.evaluate(id => [child(id).status, child(id).closeDate], kid));
+  /* ---- 3. something happened, session, Luigi sheet ---- */
+  await as(A, 'Lewis'); await go(A, '#/child/' + kid); await A.click('[data-act=happened]'); await A.waitForTimeout(200); await A.fill('#happened [name=note]', 'Went to the clinic'); await A.click('#happened button.pri, #happened form button'); await A.waitForTimeout(500);
+  console.log('3 event saved', await A.evaluate(id => S.events.filter(e => String(e.childId) === id && e.note === 'Went to the clinic').length, kid));
+  await as(A, 'Chisha'); await go(A, '#/child/' + kid); console.log('3 another worker sees Cancel on it', await A.evaluate(() => !!document.querySelector('[data-dact=cancelrec][data-kind=event]')));
+  await as(A, 'Lewis'); await go(A, '#/child/' + kid); await A.click('[data-dact=cancelrec][data-kind=event]'); await A.waitForTimeout(500);
+  console.log('3 event cancelled', await A.evaluate(id => [S.events.filter(e => e.note === 'Went to the clinic').length, S.events.filter(e => e.type === 'Record cancelled' && e.kind === 'event').map(e => e.note)[0]], kid));
+  await as(A, 'Clement'); await A.evaluate(id => { S.sessions.push({ id: uid('c'), date: today(), type: 'Individual', centre: 'Minsundu', by: USER.id, children: [id], others: 0, topic: 'test session', action: '', recordedBy: USER.id }); save(); }, kid);
+  await go(A, '#/counseling'); await A.click('[data-dact=cancelrec][data-kind=session]'); await A.waitForTimeout(500); console.log('3 session cancelled', await A.evaluate(() => S.sessions.filter(s => s.topic === 'test session').length));
+  const lk = await A.evaluate(() => S.children.filter(c => c.section === 'Luigi' && c.status !== 'Closed').slice(0, 3).map(c => c.id));
+  await A.evaluate(ids => { for (const id of ids) luigiToggle(id, today(), 'Day outreach', true); const s = luigiSess(today(), 'Day outreach', true); s.notes = 'wrong day'; touchSheet(today(), 'Day outreach').notes = 1; save(); }, lk);
+  await go(A, '#/attendance?c=Luigi&ls=day'); const cs = await A.$$('[data-dact=clearsheet]'); console.log('3 Luigi: cancel-sheet buttons', cs.length);
+  await A.evaluate(() => { const b = document.querySelector('[data-dact=clearsheet][data-k=day]'); b.closest('details').open = true; b.click(); }); await A.waitForTimeout(600);
+  console.log('3 sheet cancelled', await A.evaluate(() => S.outreach.filter(s => s.date === today() && s.type === 'Day outreach').length));
+  await A.waitForTimeout(8500); await sync(A, B);
+  console.log('3 on the phone after sync: residence, event, session, sheet', await B.evaluate(id => [child(id).residence, child(id).status, S.events.filter(e => e.note === 'Went to the clinic').length, S.sessions.filter(s => s.topic === 'test session').length, S.outreach.filter(s => s.date === today() && s.type === 'Day outreach').length], kid));
+  /* ---- 4. change a visit ---- */
+  const k2 = await A.evaluate(id => S.children.find(c => isCurrent(c) && needsVisits(c) && c.id !== id).id, kid);
+  await as(B, 'Bernard'); await go(B, '#/visit/new?child=' + k2 + '&t=Family'); await B.selectOption('[name="purpose"]', 'Follow-up'); await B.fill('[name="findings"]', 'Mother at hme'); await B.fill('[name="metWith"]', 'Mother'); await B.click('form[data-form="visit"] button.pri'); await B.waitForTimeout(700);
+  const v1 = await B.evaluate(id => visitsOf(id).filter(v => v.findings === 'Mother at hme').pop().id, k2);
+  await B.waitForTimeout(8500); await sync(B, A);
+  await go(B, '#/visitrep/' + v1); await B.click('a:has-text("Change the report")'); await B.waitForTimeout(600);
+  console.log('4 form filled', await B.evaluate(() => [document.querySelector('h1').innerText, document.querySelector('[name=findings]').value, document.querySelector('[name=metWith]').value, document.querySelector('[name=purpose]').value]));
+  await B.fill('[name="findings"]', 'Mother at home. Child goes to school.'); await B.click('form[data-form="visit"] button.pri'); await B.waitForTimeout(700);
+  const v2 = await B.evaluate(id => { const l = visitsOf(id); return l.length === 1 ? l[0].id : 'COUNT ' + l.length; }, k2);
+  console.log('4 one visit after the change', v2 !== v1 && !/COUNT/.test(v2), await B.evaluate(id => { const v = S.visits.find(x => x.id === id); return [v.findings, !!v.root, visitState(v), location.hash.slice(0, 11)]; }, v2));
+  await B.waitForTimeout(8500); await sync(B, A);
+  console.log('4 office has only the new text', await A.evaluate(id => visitsOf(id).map(v => v.findings), k2));
+  await go(A, '#/visitrep/' + v2); await A.fill('#visitval input[name=note]', 'Who is the guardian?'); await A.click('#visitval [data-dact=back]:not([data-note])'); await A.waitForTimeout(600); await A.waitForTimeout(8500); await sync(A, B);
+  await go(B, '#/visitrep/' + v2); console.log('4 sent back on the phone', await B.evaluate(() => document.querySelector('.lead .chip.c-red').innerText)); await B.click('a:has-text("Change the report")'); await B.waitForTimeout(500); await B.fill('[name="findings"]', 'Mother at home, she is the guardian. Child goes to school.'); await B.click('form[data-form="visit"] button.pri'); await B.waitForTimeout(700);
+  const v3 = await B.evaluate(id => visitsOf(id)[0].id, k2); console.log('4 after the second change', await B.evaluate(id => { const v = S.visits.find(x => x.id === id); return [visitState(v), visitTrail(v).map(e => e.type + (e.note ? ': ' + e.note : ''))]; }, v3));
+  await B.waitForTimeout(8500); await sync(B, A); await go(A, '#/visitrep/' + v3); await A.click('#visitval [data-dact=valid]'); await A.waitForTimeout(600); await A.waitForTimeout(8500); await sync(A, B);
+  await go(B, '#/visitrep/' + v3); console.log('4 validated: Change / Cancel for the author', await B.evaluate(() => [!!document.querySelector('a[href*="edit="]'), !!document.querySelector('[data-dact=cancelvisit]'), document.querySelector('.lead .chip').innerText]));
+  /* ---- 5. nobody validates his own visit ---- */
+  await go(A, '#/visit/new?child=' + kid + '&t=Family'); await A.selectOption('[name="purpose"]', 'Follow-up'); await A.fill('[name="findings"]', 'visit by Clement'); await A.click('form[data-form="visit"] button.pri'); await A.waitForTimeout(700);
+  const v5 = await A.evaluate(() => S.visits.find(v => v.findings === 'visit by Clement').id); await go(A, '#/visitrep/' + v5);
+  console.log('5 own visit', await A.evaluate(() => [!!document.querySelector('[data-dact=valid]'), (document.querySelector('#visitval').innerText.match(/Your visit[^\n]*/) || [''])[0]]));
+  await go(A, '#/visits?vt=all&vtab=check'); console.log('5 list: validate buttons', await A.evaluate(() => document.querySelectorAll('.chk [data-dact=valid]').length));
+  await as(A, 'Vadya'); await go(A, '#/visitrep/' + v5); console.log('5 another supervisor can', await A.evaluate(() => !!document.querySelector('[data-dact=valid]'))); await as(A, 'Clement');
+  /* ---- 6. clock of the phone ahead ---- */
+  mock.setSkew(-3 * 86400000); await sync(B); await B.waitForTimeout(400);
+  console.log('6 phone 3 days ahead of the server', await B.evaluate(() => [(document.querySelector('#clockwarn') || {}).innerText, clockBad()]));
+  const nb = await B.evaluate(() => S.visits.length); await go(B, '#/visit/new?child=' + k2 + '&t=Family'); await B.selectOption('[name="purpose"]', 'Follow-up'); await B.click('form[data-form="visit"] button.pri'); await B.waitForTimeout(400); console.log('6 nothing saved', await B.evaluate(n => S.visits.length === n, nb));
+  mock.setSkew(3600000); await sync(B); await B.waitForTimeout(400); console.log('6 one hour of difference: fine', await B.evaluate(() => [!document.querySelector('#clockwarn'), clockBad()]));
+  mock.setNoNow(true); await sync(B); console.log('6 old script without the hour: fine', await B.evaluate(() => clockBad()));
+  console.log('errors', errs);
+  await b.close(); process.exit(0);
+})().catch(e => { console.error('FAIL', e.message.slice(0, 900)); process.exit(1); });

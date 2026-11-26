@@ -1,0 +1,23 @@
+const { chromium } = require('playwright');
+(async () => {
+  const b = await chromium.launch(); const errs = [];
+  const p = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); p.on('dialog', d => d.accept());
+  await p.goto('file:///home/claude/demo/cicetekelo-records-DEMO.html'); await p.waitForTimeout(900); await p.click('.stile:has-text("Clement")'); await p.waitForTimeout(300);
+  const go = async h => { await p.evaluate(h => location.hash = h, h); await p.waitForTimeout(450); };
+  console.log('years', await p.evaluate(() => { const t = today(), y = Number(t.slice(0, 4)), md = t.slice(4); const prev = addDays(t, 1), nxt = addDays(t, -1); return { today: t, bornTodayMinus10: yearsBetween((y - 10) + md, t), birthdayTomorrow: yearsBetween((y - 10) + prev.slice(4), t), birthdayYesterday: yearsBetween((y - 10) + nxt.slice(4), t), leap: [yearsBetween('2012-02-29', '2026-02-28'), yearsBetween('2012-02-29', '2026-03-01')], bad: yearsBetween('', t) }; }));
+  console.log('ageOnly', await p.evaluate(() => { const t = today(); return [curAge({ age: 12, ageAsOf: addDays(t, -364) }), curAge({ age: 12, ageAsOf: addDays(t, -366) }), curAge({ age: 12 }), curAge({ dob: '2030-01-01' })]; }));
+  const id = await p.evaluate(() => S.children.find(c => !c.dob && c.age && isCurrent(c)).id);
+  await p.evaluate(id => { const c = child(id); c.age = 12; c.ageAsOf = addDays(today(), -300); save(); }, id);
+  await go('#/child/' + id); console.log('age only profile', await p.evaluate(() => [[...document.querySelectorAll('.top .chip')].map(x => x.innerText).filter(x => /years/.test(x)), [...document.querySelectorAll('dl.dl')][0].innerText.replace(/\n/g, ' | ')]));
+  await go('#/child/' + id + '/edit'); await p.click('form[data-form=child] button.pri'); await p.waitForTimeout(400);
+  console.log('edit without touching the age keeps the day it was written', await p.evaluate(id => [child(id).age, child(id).ageAsOf === addDays(today(), -300)], id));
+  await go('#/child/' + id + '/edit'); await p.fill('input[name=age]', '14'); await p.click('form[data-form=child] button.pri'); await p.waitForTimeout(400);
+  console.log('age corrected', await p.evaluate(id => [child(id).age, child(id).ageAsOf === today()], id));
+  const dob = await p.evaluate(() => { const t = today(); return (Number(t.slice(0, 4)) - 9) + t.slice(4); });
+  await go('#/child/' + id + '/edit'); await p.fill('input[name=dob]', dob); await p.click('form[data-form=child] button.pri'); await p.waitForTimeout(400);
+  console.log('dob set: birthday today', await p.evaluate(id => [child(id).dob, child(id).age, curAge(child(id)), [...document.querySelectorAll('.top .chip')].map(x => x.innerText).filter(x => /years/.test(x)), [...document.querySelectorAll('dl.dl')][0].innerText.replace(/\n/g, ' | ')], id));
+  await go('#/children?issue=dob&status=open'); console.log('filter no dob', await p.evaluate(() => [document.querySelectorAll('.main table tbody tr').length, S.children.filter(c => c.status !== 'Closed' && !c.dob).length]));
+  await go('#/pending'); console.log('issues count unchanged type', await p.evaluate(() => Object.keys(pendingData().issueCount)));
+  for (const s of ['UCC', 'Table6', 'Luigi']) await go('#/reports?s=' + s);
+  console.log('errors', errs.slice(0, 5)); await b.close();
+})();

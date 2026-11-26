@@ -1,0 +1,20 @@
+const { chromium, devices } = require('playwright');
+(async () => {
+  const b = await chromium.launch(); const errs = [];
+  const mk = async (opt, who) => { const ctx = await b.newContext({ acceptDownloads: true, ...opt }); const p = await ctx.newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); p.on('dialog', d => d.accept()); await p.goto('file:///home/claude/demo/cicetekelo-records-DEMO.html'); await p.waitForTimeout(900); if (opt.isMobile) await p.tap(`.stile:has-text("${who}")`); else await p.click(`.stile:has-text("${who}")`); await p.waitForTimeout(400); return p; };
+  const go = async (p, h) => { await p.evaluate(h => location.hash = h, h); await p.waitForTimeout(450); };
+  const q = await mk({ viewport: { width: 1440, height: 900 } }, 'Clement');
+  console.log('nav', await q.evaluate(() => [...document.querySelectorAll('nav.nav a')].map(x => x.innerText.replace(/\n/g, ' ')).join(',')), await q.evaluate(() => document.querySelector('nav.nav').offsetHeight));
+  await go(q, '#/logframe'); console.log('logframe', await q.evaluate(() => [document.querySelector('h1').innerText, document.querySelector('.note').innerText, [...document.querySelectorAll('.main tbody tr')].slice(0, 7).map(r => r.innerText.replace(/\s+/g, ' ').slice(0, 110))])); await q.screenshot({ path: 'shots/L1.png' });
+  const ph = await mk({ ...devices['Pixel 5'] }, 'Pippen'); console.log('pippen', await ph.evaluate(() => [USER.name, staffAreas(USER)]));
+  await go(ph, '#/activities'); await ph.fill('#actsearch', 'ban'); await ph.waitForTimeout(250); const n0 = await ph.evaluate(() => document.querySelectorAll('#actlist .qrow').length);
+  await ph.tap('#actlist .qmain'); await ph.waitForTimeout(300); await ph.fill('#actsearch', 'mwa'); await ph.waitForTimeout(250); await ph.tap('#actlist .qmain'); await ph.waitForTimeout(300);
+  console.log('activities', n0, await ph.evaluate(() => [document.querySelector('.qcount').innerText.replace(/\n/g, ' | '), document.querySelectorAll('#actlist .qrow').length, Object.keys(S.attendance[today()] || {}).filter(k => k.includes('@act:'))])); await ph.screenshot({ path: 'shots/A1.png' });
+  await ph.tap('.qchips a:has-text("Golf")'); await ph.waitForTimeout(300); console.log('golf empty', await ph.evaluate(() => document.querySelector('#actlist').innerText));
+  await go(ph, '#/activities'); await ph.tap('#actlist .qmain'); await ph.waitForTimeout(300); console.log('toggle off', await ph.evaluate(() => Object.keys(S.attendance[today()] || {}).filter(k => k.includes('@act:')).length));
+  await go(ph, '#/logframe'); console.log('non admin logframe', await ph.evaluate(() => document.querySelector('.main').innerText.slice(0, 40)));
+  const c = await mk({ ...devices['Pixel 5'] }, 'Chisha'); await go(c, '#/attendance?c=Nkwazi'); await c.screenshot({ path: 'shots/W1.png' }); const id = await c.evaluate(() => S.children.find(x => x.section === 'Nkwazi' && isCurrent(x)).id); await go(c, '#/child/' + id); await c.screenshot({ path: 'shots/W2.png' });
+  console.log('where', await c.evaluate(() => document.querySelector('.where3').innerText.replace(/\n/g, ' | ')));
+  for (const h of ['#/home', '#/visits', '#/children', '#/reports?s=Nkwazi', '#/help', '#/paths', '#/child/' + id + '/status', '#/child/' + id + '/edit', '#/attendance?c=Luigi', '#/attendance?c=Nkwazi&av=month']) await go(c, h);
+  console.log('errors', errs.slice(0, 6)); await b.close();
+})();

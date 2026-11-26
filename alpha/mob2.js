@@ -1,0 +1,22 @@
+const { chromium } = require('playwright'); const SP = '/tmp/cyp-shots/';
+const PIN = require('fs').readFileSync('/home/claude/alpha/t72.js', 'utf8').match(/#pinin', '(\d+)'/)[1];
+(async () => { const b = await chromium.launch(); const errs = [];
+  const p = await (await b.newContext({ viewport: { width: 393, height: 780 }, deviceScaleFactor: 2, hasTouch: true, isMobile: true })).newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('dialog', x => x.accept());
+  await p.goto('file:///home/claude/alpha/cicetekelo-records-alpha.html'); await p.waitForTimeout(700); await p.click('.stile:has-text("Clement")'); await p.fill('#pinin', PIN); await p.click('form[data-form=pinlogin] button.pri'); await p.waitForTimeout(400);
+  const go = async h => { await p.evaluate(h => location.hash = h, h); await p.waitForTimeout(450); };
+  await p.evaluate(pk => { importStarterPack(pk); }, require('/home/claude/reports/pack-v3-nophotos.json'));
+  await go('#/attendance'); console.log('header', await p.evaluate(() => { const b = document.getElementById('fbbtn'), r = b.getBoundingClientRect(), h = document.querySelector('.hd').getBoundingClientRect(); return { in: b.parentNode.className, rect: [Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height)], hd: Math.round(h.height), pos: getComputedStyle(b).position }; }));
+  await p.screenshot({ path: SP + 'mob-att.png' });
+  await p.evaluate(() => window.scrollTo(0, 900)); await p.waitForTimeout(200); console.log('after scroll, button still on screen', await p.evaluate(() => { const r = document.getElementById('fbbtn').getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; }));
+  await p.click('#fbbtn'); await p.waitForTimeout(200); console.log('bar', await p.evaluate(() => { const r = document.getElementById('fbbar').getBoundingClientRect(); return [Math.round(r.height), document.getElementById('fbbar').innerText.replace(/\s+/g, ' ')]; }));
+  await p.screenshot({ path: SP + 'mob-fbmode.png' });
+  await p.click('.qrow, .card .it, .main b', { position: { x: 20, y: 10 } }).catch(() => {}); await p.waitForTimeout(300); console.log('box opens', await p.evaluate(() => !!document.getElementById('fbbox')));
+  await p.evaluate(() => { const c = document.getElementById('fbcancel'); if (c) c.click(); }); await p.waitForTimeout(200);
+  await p.evaluate(() => { if (!UI.fbMode) document.getElementById('fbbtn').click(); }); await p.waitForTimeout(200); await p.click('#fbstop'); await p.waitForTimeout(200); console.log('cancel in bar', await p.evaluate(() => [UI.fbMode, !!document.getElementById('fbbar'), document.getElementById('fbbtn').innerText]));
+  await go('#/attendance?c=Luigi&lt=centre'); console.log('grid', await p.evaluate(() => { const w = document.querySelector('.lwrap'), t = document.querySelector('.lgrid thead th.td'), c = document.querySelector('.lgrid td.lc').getBoundingClientRect(); const tr = t.getBoundingClientRect(), wr = w.getBoundingClientRect(); return { cell: [Math.round(c.width), Math.round(c.height)], scrollLeft: Math.round(w.scrollLeft), todayVisible: tr.left >= wr.left && tr.right <= wr.right }; }));
+  await p.screenshot({ path: SP + 'mob-grid.png' });
+  await go('#/children'); console.log('children', await p.evaluate(() => [document.querySelectorAll('#childTable tbody tr').length, [...document.querySelectorAll('#childTable a.btn')].pop().innerText])); await p.click('#childTable a.btn[data-q="call=1"]'); await p.waitForTimeout(600); console.log('all', await p.evaluate(() => document.querySelectorAll('#childTable tbody tr').length));
+  // desktop
+  await p.setViewportSize({ width: 1280, height: 800 }); await go('#/children'); console.log('desktop', await p.evaluate(() => { const b = document.getElementById('fbbtn'), r = b.getBoundingClientRect(); return { in: b.parentNode.className, rect: [Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height)], rows: document.querySelectorAll('#childTable tbody tr').length, hdFits: document.querySelector('.hd').scrollWidth <= document.querySelector('.hd').clientWidth + 1 }; })); await p.screenshot({ path: SP + 'desk-header.png', clip: { x: 0, y: 0, width: 1280, height: 120 } });
+  await p.evaluate(() => { document.querySelector('[data-act=logout]').click(); }); await p.waitForTimeout(400); console.log('after logout', await p.evaluate(() => !!document.getElementById('fbbtn')));
+  console.log('errors', errs); await b.close(); })().catch(e => { console.error('FAIL', e.message.slice(0, 600)); process.exit(1); });

@@ -1,0 +1,26 @@
+const { chromium } = require('playwright'); const fs = require('fs');
+(async () => {
+  const b = await chromium.launch(); const ctx = await b.newContext({ viewport: { width: 1440, height: 900 } }); const errs = [];
+  const q = await ctx.newPage(); q.on('pageerror', e => errs.push(e.message)); q.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); q.on('dialog', d => d.accept());
+  await q.goto('file:///home/claude/alpha/cicetekelo-records-alpha.html'); await q.waitForTimeout(300); await q.click('.stile:has-text("Mauro")'); await q.waitForTimeout(150); await q.fill('#pinin', require('/home/claude/cyp-edu-src/alpha/pin.js')); await q.click('form[data-form=pinlogin] button.pri'); await q.waitForTimeout(250);
+  const v3 = JSON.parse(fs.readFileSync('/home/claude/reports/cicetekelo-starter-pack-2026-11-10-v3.json', 'utf8'));
+  const v4 = JSON.parse(fs.readFileSync('/home/claude/reports/cicetekelo-starter-pack-2026-11-11-v4.json', 'utf8'));
+  await q.evaluate(pk => { importStarterPack(pk); save(); }, v3); await q.waitForTimeout(400);
+  console.log('before', await q.evaluate(() => S.children.length));
+  const r1 = await q.evaluate(pk => { const o = importStarterPack(pk); save(); return o.nkwazi; }, v4); console.log('import 1', JSON.stringify(r1));
+  const snap = await q.evaluate(() => JSON.stringify([S.children.length, S.moves.length, Object.keys(S.aliases || {}).length]));
+  const r2 = await q.evaluate(pk => { const o = importStarterPack(pk); save(); return o.nkwazi; }, v4); console.log('import 2', JSON.stringify(r2), snap, await q.evaluate(() => JSON.stringify([S.children.length, S.moves.length, Object.keys(S.aliases || {}).length])));
+  console.log(await q.evaluate(() => JSON.stringify({ total: S.children.length, bySec: S.children.reduce((o, c) => { const k = c.section + ' ' + c.status; o[k] = (o[k] || 0) + 1; return o; }, {}), aliases: S.aliases })));
+  console.log('joined', await q.evaluate(() => S.children.filter(c => c.nkzKey && !String(c.id).startsWith('N')).map(c => [c.id, fullName(c), c.sex, c.section, c.status, c.residence, c.sectionToCheck ? 'CHECK' : '', pathOf(c).map(s => s.sec + '[' + (s.a || '?') + '>' + (s.end ? s.end + ' ' + (s.b || '?') : 'now') + ']').join(' → '), (backAuto(c) || {}).date || ''].join(' | ')).join('\n')));
+  console.log('nkz flows 2026', await q.evaluate(() => { const F = flowData('Nkwazi', '2026-01-01', today()); return JSON.stringify({ start: F.start, in: F.inBy, out: F.outBy, here: F.here, n: F.rows.length }); }));
+  console.log('nkz flows all', await q.evaluate(() => { const F = flowData('Nkwazi', '1990-01-01', today()); return JSON.stringify({ start: F.start, in: F.inBy, out: F.outBy, here: F.here, n: F.rows.length }); }));
+  for (const m of ['2026-02', '2026-03', '2026-09', '2026-10']) console.log(m, await q.evaluate(m => REPORTS.Nkwazi.rows(m).map(r => (r[0] || '-') + '=' + r[2].join('/')).join('  '), m));
+  console.log('school rep', await q.evaluate(() => REPORTS.School.rows('2026-10').map(r => r[1].slice(0, 28) + '=' + r[2].join('/')).join('  ')));
+  const go = async h => { await q.evaluate(h => location.hash = h, h); await q.waitForTimeout(450); };
+  const shot = async (h, n, full) => { await go(h); await q.screenshot({ path: 'shots/' + n + '.png', fullPage: !!full }); };
+  await shot('#/paths?ps=Nkwazi', 'N-paths'); await shot('#/paths?ps=Nkwazi&py=all', 'N-paths-all'); await shot('#/paths?ps=Luigi', 'N-paths-luigi');
+  await shot('#/child/L5096', 'N-child-triple'); await shot('#/child/L5093', 'N-child-watayi'); await shot('#/child/5176', 'N-child-chola'); await shot('#/child/N007', 'N-child-n007');
+  await shot('#/attendance?c=Nkwazi', 'N-att'); await shot('#/reports?s=Nkwazi&m=2026-09', 'N-report'); await shot('#/pending', 'N-todo'); await shot('#/children?section=Nkwazi', 'N-children'); await shot('#/home', 'N-home'); await shot('#/staff', 'N-staff', true);
+  for (const h of ['#/child/N007/edit', '#/child/N007/status', '#/visits?vt=Family&vtab=need', '#/reports?s=School&m=2026-10', '#/reports?s=Luigi&m=2026-10', '#/children?section=Nkwazi&status=all&issue=files', '#/paths?ps=UCC&py=all', '#/paths?ps=Youth']) await go(h);
+  console.log('errors', errs.slice(0, 8)); await b.close();
+})();

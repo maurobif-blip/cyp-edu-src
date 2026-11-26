@@ -1,0 +1,24 @@
+const { chromium, devices } = require('playwright');
+(async () => {
+  const b = await chromium.launch(); const errs = [];
+  const mk = async (opt, who) => { const p = await (await b.newContext(opt)).newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); p.on('dialog', d => d.accept()); await p.goto('file:///home/claude/demo/cicetekelo-records-DEMO.html'); await p.waitForTimeout(900); if (opt.isMobile) await p.tap(`.stile:has-text("${who}")`); else await p.click(`.stile:has-text("${who}")`); await p.waitForTimeout(400); return p; };
+  const go = async (p, h) => { await p.evaluate(h => location.hash = h, h); await p.waitForTimeout(450); };
+  const q = await mk({ viewport: { width: 1440, height: 900 } }, 'Clement');
+  console.log('nav', await q.evaluate(() => [...document.querySelectorAll('nav.nav a')].map(x => x.innerText.replace(/\n/g, ' ')).join(',')));
+  console.log('lists', await q.evaluate(() => { const cur = S.children.filter(isCurrent); const n = k => cur.filter(c => attCentres(c).includes(k)).length; return { Minsundu: n('Minsundu'), Nkwazi: n('Nkwazi'), School: n('School'), nkwaziSection: cur.filter(c => c.section === 'Nkwazi').length, schoolFromMinsundu: cur.filter(c => attCentres(c).includes('School') && centreOf(c) === 'Minsundu').length }; }));
+  await go(q, '#/attendance?c=Nkwazi&av=day'); console.log('nkwazi centre', await q.evaluate(() => [document.querySelector('h1').innerText, [...document.querySelectorAll('.attctl .seg')][0].innerText.replace(/\n/g, ' | '), document.querySelectorAll('#attTable tbody tr:not(.gsep)').length]));
+  await go(q, '#/attendance?c=School&av=day'); console.log('school', await q.evaluate(() => [document.querySelector('h1').innerText, document.querySelectorAll('#attTable tbody tr:not(.gsep)').length, [...document.querySelectorAll('#attTable tbody tr:not(.gsep)')].slice(0, 40).map(r => r.innerText).filter(t => /Minsundu/.test(t)).length]));
+  const k = await q.evaluate(() => { const c = S.children.find(c => isCurrent(c) && c.section === 'Nkwazi' && dayType(c) === 'Nkwazi community school'); return { id: c.id, school: attKey(c, 'School'), centre: attKey(c, 'Nkwazi') }; });
+  await q.click(`#attTable button[data-id="${k.school}"][data-v="A"]`); await q.waitForTimeout(300);
+  console.log('two separate marks', await q.evaluate(k => [(S.attendance[today()] || {})[k.school], (S.attendance[today()] || {})[k.centre] || '(centre: none)'], k));
+  await go(q, '#/attendance?c=School&av=month'); console.log('school month rows', await q.evaluate(() => document.querySelectorAll('table.mreg tbody tr').length));
+  await go(q, '#/children'); console.log('children', await q.evaluate(() => [[...document.querySelectorAll('.main table thead th')].map(x => x.innerText).join(','), [...document.querySelectorAll('.secf a')].map(x => x.innerText).join(' | '), document.body.innerText.includes('Phase')]));
+  await go(q, '#/child/' + k.id); console.log('profile', await q.evaluate(() => [document.querySelector('.where3').innerText.replace(/\n/g, ' | '), [...document.querySelectorAll('.top .btn')].map(x => x.innerText).join(' / '), document.body.innerText.includes('Phase')]));
+  await q.click('[data-act=happened]'); await q.waitForTimeout(200); await q.fill('#evnote', 'Fell at school, taken to the clinic'); await q.click('form[data-form=event] button'); await q.waitForTimeout(400);
+  console.log('event in history', await q.evaluate(() => (document.querySelector('.tl').innerText.match(/[^\n]*Fell at school[^\n]*/) || [])[0]), await q.evaluate(() => S.events[S.events.length - 1].type));
+  await go(q, '#/paths?ps=Nkwazi'); console.log('paths', await q.evaluate(() => document.body.innerText.includes('Brought from the past year')));
+  await go(q, '#/visits'); console.log('monitoring h1', await q.evaluate(() => document.querySelector('h1').innerText));
+  const ph = await mk({ ...devices['Pixel 5'] }, 'Chisha'); console.log('home nkwazi links', await ph.evaluate(() => [...document.querySelectorAll('#guide .card a')].slice(0, 8).map(a => a.innerText).join(' / ')));
+  await go(ph, '#/attendance?c=School'); console.log('phone school quick', await ph.evaluate(() => [document.querySelector('h1').innerText, document.querySelectorAll('.qrow').length, (document.querySelector('.qrow small') || {}).innerText, [...document.querySelectorAll('.qchips a')].length]));
+  console.log('errors', errs.slice(0, 6)); await b.close();
+})();

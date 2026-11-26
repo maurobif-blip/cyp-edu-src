@@ -1,0 +1,29 @@
+<!-- @dsCard group="Apps" height=640 width=1180 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sheet - preview</title>
+<style>
+body{padding:var(--space-4)}.s{display:flex;gap:var(--space-6);align-items:flex-start}.ph{width:360px;height:600px;display:flex;border:1px solid var(--line-strong)}.pc{flex:1;height:600px;display:grid;place-items:center;background:var(--surface-band);padding:var(--space-6)}
+</style>
+</head>
+<body>
+<div class="s">
+ <div class="ph"><div class="cyp-sheet">
+  <div class="cyp-sheet__head"><h2 class="heading-2">New request</h2><button class="cyp-btn"><svg class="cyp-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/> <path d="m6 6 12 12"/></svg>Close</button></div>
+  <div class="cyp-sheet__body">
+   <div class="cyp-field"><label for="s1">What you need</label><input class="cyp-input" id="s1" value="Mealie meal, 10 bags"></div>
+   <div class="cyp-field"><label for="s2">Amount in Kwacha</label><input class="cyp-input" id="s2" value="2,400" inputmode="decimal"></div>
+   <fieldset class="cyp-choice"><legend>Priority</legend><div class="cyp-choice__row"><label><input type="radio" name="sp" checked><span>P1</span></label><label><input type="radio" name="sp"><span>P2</span></label><label><input type="radio" name="sp"><span>P3</span></label></div></fieldset>
+  </div>
+  <div class="cyp-sheet__foot"><button class="cyp-btn cyp-btn--primary cyp-btn--block">Send</button></div>
+ </div></div>
+ <div class="pc"><div class="cyp-sheet cyp-sheet--card">
+  <div class="cyp-sheet__head"><h2 class="heading-2">Comment</h2><button class="cyp-btn"><svg class="cyp-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/> <path d="m6 6 12 12"/></svg>Close</button></div>
+  <div class="cyp-sheet__body"><div class="cyp-field"><label for="s3">Your comment</label><textarea class="cyp-input" id="s3" rows="4" style="padding:var(--space-3)">The word on this button is not clear.</textarea></div></div>
+  <div class="cyp-sheet__foot"><button class="cyp-btn cyp-btn--primary">Save</button></div>
+ </div></div>
+</div>
+</body>
+</html>

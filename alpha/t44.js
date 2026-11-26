@@ -1,0 +1,21 @@
+const { chromium, devices } = require('playwright');
+(async () => {
+  const b = await chromium.launch(); const errs = [];
+  const mk = async (opt, who) => { const p = await (await b.newContext(opt)).newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); await p.goto('file:///home/claude/demo/cicetekelo-records-DEMO.html'); await p.waitForTimeout(900); if (opt.isMobile) await p.tap(`.stile:has-text("${who}")`); else await p.click(`.stile:has-text("${who}")`); await p.waitForTimeout(400); return p; };
+  const go = async (p, h) => { await p.evaluate(h => location.hash = h, h); await p.waitForTimeout(450); };
+  const q = await mk({ viewport: { width: 1440, height: 900 } }, 'Clement');
+  const order = sel => q.evaluate(sel => sel.map(s => { const e = document.querySelector(s); return e ? Math.round(e.getBoundingClientRect().top) : null; }), sel);
+  await go(q, '#/attendance?c=Minsundu&g=All&av=day'); console.log('minsundu tops: h1, tiles, controls, filters, table', await order(['h1', '.grid.g4', '.attctl', '.card.filters', '#attTable'])); await q.screenshot({ path: 'shots/N1.png' });
+  await go(q, '#/attendance?c=Luigi'); console.log('luigi tops: h1, tiles, controls, tabs', await order(['h1', '#lsheets', '.attctl', '.seg:not(.dayseg)']), await q.evaluate(() => [...document.querySelectorAll('.main > .seg a .dlong')].map(x => x.innerText))); await q.screenshot({ path: 'shots/N2.png' });
+  await q.click('#lsheets a:nth-child(2)'); await q.waitForTimeout(300); console.log('sheet select still works', await q.evaluate(() => document.querySelector('#lsheets a.on .key').innerText.replace(/\n/g, ' ').slice(0, 40)));
+  await go(q, '#/attendance?c=Luigi&lt=day'); console.log('month view ok', await q.evaluate(() => !!document.querySelector('#lattBody')));
+  await go(q, '#/children'); const all = await q.evaluate(() => document.querySelectorAll('.main table tbody tr').length);
+  await q.click('.secf a:has-text("Minsundu · UCC")'); await q.waitForTimeout(300); const ucc = await q.evaluate(() => document.querySelectorAll('.main table tbody tr').length);
+  await q.click('.secf a:has-text("Nkwazi Centre")'); await q.waitForTimeout(300);
+  console.log('children', all, ucc, await q.evaluate(() => [document.querySelectorAll('.main table tbody tr').length, location.hash, [...document.querySelectorAll('.main table thead th')].map(x => x.innerText).join(','), [...document.querySelectorAll('.secf a.on')].map(x => x.innerText).join('+')])); await q.screenshot({ path: 'shots/N3.png' });
+  await go(q, '#/children?section=Minsundu'); console.log('link from Home: Minsundu', await q.evaluate(() => [...document.querySelectorAll('.secf a.on')].map(x => x.innerText).join('+')));
+  await go(q, '#/home'); console.log('home links', await q.evaluate(() => [...document.querySelectorAll('#guide .card')].map(c => c.querySelector('h3').innerText + ': ' + [...c.querySelectorAll('a')].map(a => a.innerText).join(' / '))));
+  const ph = await mk({ ...devices['Pixel 5'] }, 'Chisha'); await go(ph, '#/attendance?c=Nkwazi'); console.log('phone quick still ok', await ph.evaluate(() => [!!document.querySelector('.qtop'), document.querySelectorAll('.qrow').length, document.documentElement.scrollWidth - innerWidth]));
+  await go(ph, '#/children'); console.log('phone children overflow', await ph.evaluate(() => document.documentElement.scrollWidth - innerWidth));
+  console.log('errors', errs.slice(0, 6)); await b.close();
+})();

@@ -1,0 +1,22 @@
+const { chromium } = require('playwright'); const fs = require('fs'); const SP = '/tmp/cyp-shots/';
+(async () => {
+  const b = await chromium.launch(); const errs = []; let native = 0; const p = await (await b.newContext({ viewport: { width: 393, height: 850 }, deviceScaleFactor: 2 })).newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('dialog', x => { native++; x.accept(); });
+  await p.goto('file:///home/claude/alpha/cicetekelo-records-alpha.html'); await p.waitForTimeout(700); await p.click('.stile:has-text("Clement")'); await p.fill('#pinin', require('/home/claude/cyp-edu-src/alpha/pin.js')); await p.click('form[data-form=pinlogin] button.pri'); await p.waitForTimeout(400);
+  await p.evaluate(pk => { importStarterPack(pk); save(); }, JSON.parse(fs.readFileSync('/home/claude/reports/pack-v3-nophotos.json', 'utf8'))); await p.waitForTimeout(700);
+  const go = async h => { await p.evaluate(h => location.hash = h, h); await p.waitForTimeout(450); };
+  const kid = await p.evaluate(() => { const c = S.children.find(c => isCurrent(c) && needsVisits(c)); const bn = S.staff.find(s => s.name.includes('Bernard')).id; S.visits.push({ id: 'vtest1', childId: c.id, team: 'Family', date: today(), purpose: 'Follow-up', where: 'Home', by: bn, successful: 'Yes', findings: 'x', action: '', recordedBy: bn, recordedOn: today() }); S.events.push({ id: 'etest1', childId: String(c.id), type: 'Something happened', date: today(), note: 'typo', by: USER.id }); save(); return c.id; });
+  await go('#/visitrep/vtest1'); await p.click('[data-dact=cancelvisit]'); await p.waitForTimeout(300);
+  console.log('dialog', await p.evaluate(() => { const d = document.getElementById('dlg'); return d ? [d.getAttribute('role'), d.querySelector('h2').innerText, d.querySelector('p').innerText.replace(/\n/g, ' / '), [...d.querySelectorAll('button')].map(x => x.innerText), document.activeElement.tagName] : null; }));
+  await p.screenshot({ path: SP + 'dlg.png' });
+  await p.click('#dlg .ok'); await p.waitForTimeout(300); console.log('empty why: still open, visit still there', await p.evaluate(() => [!!document.getElementById('dlg'), S.visits.some(v => v.id === 'vtest1')]));
+  await p.click('#dlg .keep'); await p.waitForTimeout(300); console.log('Keep the visit: closed, visit there', await p.evaluate(() => [!document.getElementById('dlg'), S.visits.some(v => v.id === 'vtest1')]));
+  await p.click('[data-dact=cancelvisit]'); await p.waitForTimeout(200); await p.keyboard.press('Escape'); await p.waitForTimeout(200); console.log('Escape: closed, visit there', await p.evaluate(() => [!document.getElementById('dlg'), S.visits.some(v => v.id === 'vtest1')]));
+  await p.click('[data-dact=cancelvisit]'); await p.waitForTimeout(200); await p.keyboard.type('Wrong child'); await p.keyboard.press('Tab'); await p.keyboard.press('Tab'); console.log('tab order ends on', await p.evaluate(() => document.activeElement.innerText)); await p.keyboard.press('Enter'); await p.waitForTimeout(500);
+  console.log('cancelled', await p.evaluate(() => [!S.visits.some(v => v.id === 'vtest1'), S.events.filter(e => e.type === 'Visit cancelled').map(e => e.note.split('Why: ')[1])]));
+  await go('#/child/' + kid); await p.click('[data-dact=cancelrec][data-kind=event]'); await p.waitForTimeout(200); console.log('line dialog', await p.evaluate(() => [document.querySelector('#dlg h2').innerText, [...document.querySelectorAll('#dlg button')].map(x => x.innerText)])); await p.fill('#dlg textarea', 'typo'); await p.click('#dlg .ok'); await p.waitForTimeout(400);
+  console.log('line cancelled', await p.evaluate(() => !S.events.some(e => e.id === 'etest1')), '| native dialogs used', native);
+  /* keyboard: a child can be opened from the list with Tab and Enter */
+  await p.setViewportSize({ width: 1440, height: 900 }); await go('#/children'); await p.focus('#childTable a.cname'); await p.keyboard.press('Enter'); await p.waitForTimeout(300); console.log('keyboard opens the file', await p.evaluate(() => location.hash.slice(0, 8)));
+  console.log('wording', await (async () => { const out = {}; for (const [h, re] of [['#/counseling', 'Counsel+ing'], ['#/visits?vt=all&vtab=check', 'Education office|supervisor'], ['#/children', 'Tap to see what|Click to see what']]) { await go(h); out[h] = await p.evaluate(r => (document.querySelector('main').innerText.match(new RegExp(r, 'g')) || []).join(','), re); } return out; })());
+  console.log('errors', errs); await b.close();
+})().catch(e => { console.error('FAIL', e.message.slice(0, 500)); process.exit(1); });

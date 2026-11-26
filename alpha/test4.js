@@ -1,0 +1,47 @@
+const { chromium } = require('playwright');
+(async () => {
+  const b = await chromium.launch();
+  const ctx = await b.newContext({ viewport: { width: 1280, height: 900 }, acceptDownloads: true });
+  const p = await ctx.newPage(); const errs = [];
+  p.on('pageerror', e => errs.push('PAGEERROR ' + e.message)); p.on('console', m => { if (m.type() === 'error') errs.push('CONSOLE ' + m.text()); }); p.on('dialog', d => d.accept());
+  const url = 'file://' + __dirname + '/cicetekelo-records-alpha.html';
+  await p.goto(url); await p.waitForSelector('.stile'); await p.click('text=Mauro (evaluation)');
+  await p.goto(url + '#/staff/data'); await p.waitForSelector('#importfile');
+  await p.setInputFiles('#importfile', '/mnt/user-data/attachments/3a39158f-1dda-5399-b8a5-94e59b8a34d9/b88f584d-users_export_1.csv'); await p.waitForSelector('#importmsg .ok');
+  await p.goto(url + '#/review'); await p.waitForTimeout(300);
+  const rv = await p.evaluate(() => ({ n: document.querySelectorAll('input[name=ids]').length, checked: [...document.querySelectorAll('input[name=ids]:checked')].map(x => x.value), note: document.querySelector('.note').innerText }));
+  console.log('REVIEW', JSON.stringify(rv));
+  const rows = await p.evaluate(() => [...document.querySelectorAll('form[data-form=bulkclose] tbody tr')].map(tr => tr.children[0].querySelector('input').value + ' ' + tr.children[3].innerText + ' | ' + tr.children[4].innerText.replace(/\n/g, ' / ')));
+  console.log(rows.join('\n'));
+  async function dl(sel, name) { const [d] = await Promise.all([p.waitForEvent('download'), p.click(sel)]); const f = 'shots/xl/' + name + '-' + d.suggestedFilename(); await d.saveAs(f); return f; }
+  await dl('button[data-act=xl][data-k=review]', 'a');
+  await p.click('form[data-form=bulkclose] button.pri'); await p.waitForTimeout(300);
+  console.log('closed now', await p.evaluate(() => S.children.filter(c => c.status === 'Closed').map(c => c.id + ':' + c.closeReason)));
+  // attendance filters
+  await p.goto(url + '#/attendance?g=Non-resident'); await p.waitForTimeout(200);
+  const n0 = await p.locator('#attTable tbody tr').count();
+  await p.fill('#attsearch', 'john'); await p.waitForTimeout(150);
+  const n1 = await p.locator('#attTable tbody tr').count();
+  console.log('attendance non-res rows', n0, 'after search john', n1, 'focus kept', await p.evaluate(() => document.activeElement.id));
+  await p.fill('#attsearch', '');
+  await p.selectOption('select[data-filter=sec]', 'UCC'); await p.waitForTimeout(150);
+  console.log('UCC only', await p.locator('#attTable tbody tr').count());
+  const first = await p.locator('#attTable button[data-v=P]').first(); await first.click(); await p.waitForTimeout(100);
+  await p.selectOption('select[data-filter=only]', 'unmarked'); await p.waitForTimeout(150);
+  console.log('unmarked', await p.locator('#attTable tbody tr').count());
+  await p.screenshot({ path: 'shots/50-attendance.png', fullPage: true });
+  const files = [];
+  files.push(await dl('button[data-act=xl][data-k=attday]', 'b'));
+  files.push(await dl('button[data-act=xl][data-k=attmonth]', 'c'));
+  await p.goto(url + '#/children?section=Youth'); await p.waitForTimeout(200); files.push(await dl('button[data-act=exportlist]', 'd'));
+  await p.goto(url + '#/visits'); await p.waitForTimeout(200); files.push(await dl('button[data-act=xl][data-k=visits]', 'e'));
+  await p.goto(url + '#/pending'); await p.waitForTimeout(200); files.push(await dl('button[data-act=xl][data-k=pending]', 'f'));
+  await p.screenshot({ path: 'shots/51-pending.png' });
+  await p.goto(url + '#/reports?s=UCC'); await p.waitForTimeout(200); files.push(await dl('button[data-act=csvtable]', 'g'));
+  await p.goto(url + '#/outreach'); await p.waitForTimeout(200); files.push(await dl('button[data-act=xl][data-k=outreach]', 'h'));
+  await p.goto(url + '#/counseling'); await p.waitForTimeout(200); files.push(await dl('button[data-act=xl][data-k=sessions]', 'i'));
+  await p.goto(url + '#/staff/data'); await p.waitForTimeout(200); files.push(await dl('button[data-act=export][data-k=all]', 'j'));
+  console.log(files.join('\n'));
+  console.log('ERRORS', errs);
+  await b.close();
+})();

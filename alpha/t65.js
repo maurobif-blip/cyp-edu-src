@@ -1,0 +1,20 @@
+const { chromium } = require('playwright'); const fs = require('fs'); const SP = '/tmp/cyp-shots/';
+(async () => {
+  const b = await chromium.launch(); const errs = []; const p = await (await b.newContext({ viewport: { width: 393, height: 850 }, deviceScaleFactor: 2 })).newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('dialog', x => x.accept());
+  await p.goto('file:///home/claude/alpha/cicetekelo-records-alpha.html'); await p.waitForTimeout(700); await p.click('.stile:has-text("Clement")'); await p.fill('#pinin', require('/home/claude/cyp-edu-src/alpha/pin.js')); await p.click('form[data-form=pinlogin] button.pri'); await p.waitForTimeout(400);
+  await p.evaluate(pk => { importStarterPack(pk); save(); }, JSON.parse(fs.readFileSync('/home/claude/reports/pack-v3-nophotos.json', 'utf8'))); await p.waitForTimeout(700);
+  const go = async h => { await p.evaluate(h => location.hash = h, h); await p.waitForTimeout(450); };
+  const info = () => p.evaluate(() => { const d = document.querySelector('.cyp-pager--day'); return d ? [d.className, d.querySelector('.cyp-tag').innerText, d.querySelector('.cyp-pager__now').firstChild.textContent, d.querySelectorAll('.cyp-btn').length, !!d.querySelector('button[disabled]'), (document.querySelector('.qday') || {}).innerText, document.documentElement.scrollWidth <= innerWidth + 1] : 'no bar'; });
+  await go('#/attendance?c=Minsundu&g=UCC'); console.log('today', await info()); await p.screenshot({ path: SP + 'day-today.png' });
+  await p.click('.cyp-pager--day a.cyp-btn:has-text("Before")'); await p.waitForTimeout(400); console.log('previous', await info(), await p.evaluate(() => location.hash));
+  await p.click('.cyp-pager--day a.cyp-btn:has-text("Before")'); await p.waitForTimeout(400); console.log('two days back', await info()); await p.screenshot({ path: SP + 'day-other.png' });
+  await p.click('.qrow [data-act=qatt], .qmain'); await p.waitForTimeout(400); console.log('a mark lands on the shown day', await p.evaluate(() => { const d = route().q.get('d'); return [d, Object.keys(S.attendance[d] || {}).length, Object.keys(S.attendance[today()] || {}).length]; }));
+  await go('#/attendance?c=Minsundu&g=UCC'); console.log('reopened on today', await info());
+  await go('#/attendance?c=Minsundu&g=UCC&av=month'); console.log('month register', await p.evaluate(() => [!!document.querySelector('.cyp-pager--day'), document.querySelector('.lead').innerText]));
+  await go('#/attendance?c=Minsundu&g=UCC&av=day'); console.log('full list', await info());
+  await go('#/attendance?c=Luigi'); console.log('Luigi', await info()); await p.click('.cyp-pager--day a.cyp-btn:has-text("Before")'); await p.waitForTimeout(400); console.log('Luigi previous', await info(), await p.evaluate(() => location.hash));
+  await go('#/attendance?c=Luigi&lt=day'); console.log('Luigi month view', await p.evaluate(() => [!!document.querySelector('.cyp-pager--day'), document.querySelector('.lead').innerText.slice(0, 30)]));
+  await go('#/attendance?c=Nkwazi'); console.log('Nkwazi', await info()); await go('#/attendance?c=School'); console.log('School', await info());
+  await p.setViewportSize({ width: 1440, height: 900 }); await go('#/attendance?c=Minsundu&g=UCC'); console.log('computer', await info());
+  console.log('errors', errs); await b.close();
+})().catch(e => { console.error('FAIL', e.message.slice(0, 500)); process.exit(1); });

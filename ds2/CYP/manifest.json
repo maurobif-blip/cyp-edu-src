@@ -1,0 +1,852 @@
+{
+  "manifestVersion": 3,
+  "name": "CYP",
+  "namespace": "CYP",
+  "files": [
+    "apps.md",
+    "assets/Icons/README.md",
+    "assets/Logos/README.md",
+    "components/AppBar/README.md",
+    "components/AppScreens/README.md",
+    "components/Button/README.md",
+    "components/ChapterOpener/README.md",
+    "components/ChitengeStrip/README.md",
+    "components/Choice/README.md",
+    "components/ColourKey/README.md",
+    "components/DataTable/README.md",
+    "components/DocHeader/README.md",
+    "components/DonutChart/README.md",
+    "components/Field/README.md",
+    "components/FindingsBox/README.md",
+    "components/IconDisc/README.md",
+    "components/ListRow/README.md",
+    "components/Logo/README.md",
+    "components/MonthlySummary/README.md",
+    "components/ProgressTable/README.md",
+    "components/ReportCover/README.md",
+    "components/ReportPage/README.md",
+    "components/RequestForm/README.md",
+    "components/ResultBand/README.md",
+    "components/SectionOpener/README.md",
+    "components/StatTile/README.md",
+    "components/StatusTag/README.md",
+    "components/Stepper/README.md",
+    "components/SyncBanner/README.md",
+    "components/TabBar/README.md",
+    "components/bundle.css",
+    "components/bundle.js",
+    "fonts/OpenSans-Bold.woff2",
+    "fonts/OpenSans-Italic.woff2",
+    "fonts/OpenSans-Light.woff2",
+    "fonts/OpenSans-Regular.woff2",
+    "fonts/OpenSans-SemiBold.woff2",
+    "fonts/OpenSans-SemiBoldItalic.woff2",
+    "fonts/Ubuntu-Bold.woff2",
+    "fonts/Ubuntu-Medium.woff2",
+    "licenses/Lucide-ISC.txt",
+    "licenses/OpenSans-OFL-1.1.txt",
+    "licenses/Ubuntu-UFL-1.0.txt",
+    "narrative-report.md",
+    "templates.md",
+    "tokens.css"
+  ],
+  "libraries": [],
+  "components": [
+    {
+      "name": "AppBar",
+      "group": "Apps",
+      "summary": "The blue bar at the top of every screen of the three apps."
+    },
+    {
+      "name": "AppScreens",
+      "group": "Apps",
+      "summary": "Three phone screens that put the app components together: counting plates in CYP EAT, the three flows of CYP FIN, the attendance list of CYP EDU."
+    },
+    {
+      "name": "Button",
+      "group": "Apps",
+      "summary": "Anything a person taps to open, save, change or send."
+    },
+    {
+      "name": "ChapterOpener",
+      "group": "Report",
+      "summary": "A full page on the blue ground that opens a numbered chapter."
+    },
+    {
+      "name": "ChitengeStrip",
+      "group": "Brand",
+      "summary": "The zig-zag band from the app wordmarks, as a full-width strip: (24px) or with cyp-chitenge--tall (72px)."
+    },
+    {
+      "name": "Choice",
+      "group": "Apps",
+      "summary": "One answer out of two or three, with every option on screen."
+    },
+    {
+      "name": "ColourKey",
+      "group": "Brand",
+      "summary": "The fixed colours and icons of the project, as a legend block."
+    },
+    {
+      "name": "DataTable",
+      "group": "Report",
+      "summary": "The table for annexes, for exports and for any list of figures."
+    },
+    {
+      "name": "DocHeader",
+      "group": "Templates",
+      "summary": "The top of every document an app makes: the seal, the project name, the document title, and three facts about the document."
+    },
+    {
+      "name": "DonutChart",
+      "group": "Report",
+      "summary": "Shares of one total by place, as a ring with a legend that carries the names and the values."
+    },
+    {
+      "name": "Field",
+      "group": "Apps",
+      "summary": "One question with its answer box."
+    },
+    {
+      "name": "FindingsBox",
+      "group": "Report",
+      "summary": "A tinted box for text that comes from a source outside the report narrative: an evaluation, a field visit, a meeting."
+    },
+    {
+      "name": "IconDisc",
+      "group": "Brand",
+      "summary": "A line icon on a round colour fill: ... ."
+    },
+    {
+      "name": "ListRow",
+      "group": "Apps",
+      "summary": "One record in a list: a child, a visit, a request, a delivery."
+    },
+    {
+      "name": "Logo",
+      "group": "Brand",
+      "summary": "The project seal and the three app wordmarks, as files in the Logos asset group."
+    },
+    {
+      "name": "MonthlySummary",
+      "group": "Templates",
+      "summary": "An A4 summary an app makes from its data for one period, here a month of CYP EAT."
+    },
+    {
+      "name": "ProgressTable",
+      "group": "Report",
+      "summary": "The detail of one result: a framed table with one row per place, a bar for progress against target, and the current and target values."
+    },
+    {
+      "name": "ReportCover",
+      "group": "Report",
+      "summary": "First page of the narrative report, A4 portrait: the blue ground with the seal on its white plate, the title in capitals, the subtitle in yellow, the date disc…"
+    },
+    {
+      "name": "ReportPage",
+      "group": "Report",
+      "summary": "One A4 page of the narrative report: running head, heading, text, figures, running foot."
+    },
+    {
+      "name": "RequestForm",
+      "group": "Templates",
+      "summary": "An A4 form made by an app from one record, here a payment request from CYP FIN."
+    },
+    {
+      "name": "ResultBand",
+      "group": "Report",
+      "summary": "One top-level result in three parts on a row: a sentence, the result name with its icon disc, and one figure on a colour block."
+    },
+    {
+      "name": "SectionOpener",
+      "group": "Report",
+      "summary": "Half a page of photo beside half a page of colour, with an icon and a name in capitals."
+    },
+    {
+      "name": "StatTile",
+      "group": "Apps",
+      "summary": "One number with its name, for the home page of an app and the top of an internal template."
+    },
+    {
+      "name": "StatusTag",
+      "group": "Apps",
+      "summary": "The state of one record in one or two words."
+    },
+    {
+      "name": "Stepper",
+      "group": "Apps",
+      "summary": "A number changed by tapping minus and plus, for counts made on the spot: plates, people, bags."
+    },
+    {
+      "name": "SyncBanner",
+      "group": "Apps",
+      "summary": "A full-width line under the app bar that says whether the work is saved and sent."
+    },
+    {
+      "name": "TabBar",
+      "group": "Apps",
+      "summary": "The main pages of an app at the bottom of a phone screen."
+    }
+  ],
+  "assetGroups": [
+    {
+      "name": "Logos",
+      "tile": "l",
+      "order": [
+        "cyp-seal.png",
+        "cyp-edu.svg",
+        "cyp-fin.svg",
+        "cyp-eat.svg",
+        "cyp-edu-icon.svg",
+        "cyp-fin-icon.svg",
+        "cyp-eat-icon.svg",
+        "chitenge-strip.svg"
+      ],
+      "files": [
+        {
+          "path": "assets/Logos/cyp-seal.png",
+          "id": "f66953c958e243bcf4c122eb5f6f40c7"
+        },
+        {
+          "path": "assets/Logos/cyp-edu.svg",
+          "id": "aef6b465c6d008f111868b95a85b0c1b"
+        },
+        {
+          "path": "assets/Logos/cyp-fin.svg",
+          "id": "2e490cbac25ac598b1184a1f9057ea2a"
+        },
+        {
+          "path": "assets/Logos/cyp-eat.svg",
+          "id": "c5468df09d17beb9fa0ec53fc780331f"
+        },
+        {
+          "path": "assets/Logos/cyp-edu-icon.svg",
+          "id": "33da4b5db6835d111fe195290c28e83b"
+        },
+        {
+          "path": "assets/Logos/cyp-fin-icon.svg",
+          "id": "aeff6be1149adf3716535dea21f6b19f"
+        },
+        {
+          "path": "assets/Logos/cyp-eat-icon.svg",
+          "id": "690e4aba3e28fc5dbadc686660d34968"
+        },
+        {
+          "path": "assets/Logos/chitenge-strip.svg",
+          "id": "0aadcdc04910d337298774a55cbc14ba"
+        }
+      ]
+    },
+    {
+      "name": "Icons",
+      "tile": "xs",
+      "order": [
+        "home.svg",
+        "users.svg",
+        "user.svg",
+        "book-open.svg",
+        "graduation-cap.svg",
+        "utensils.svg",
+        "wallet.svg",
+        "banknote.svg",
+        "receipt.svg",
+        "calendar.svg",
+        "clipboard-list.svg",
+        "file-text.svg",
+        "check.svg",
+        "x.svg",
+        "plus.svg",
+        "minus.svg",
+        "search.svg",
+        "download.svg",
+        "wifi-off.svg",
+        "refresh-cw.svg",
+        "triangle-alert.svg",
+        "circle-check.svg",
+        "circle-x.svg",
+        "info.svg",
+        "chevron-right.svg",
+        "chevron-left.svg",
+        "map-pin.svg",
+        "heart-pulse.svg",
+        "trophy.svg",
+        "wrench.svg",
+        "sprout.svg",
+        "hand-heart.svg",
+        "camera.svg",
+        "settings.svg",
+        "lock.svg",
+        "bar-chart-3.svg",
+        "scale.svg",
+        "package.svg",
+        "truck.svg",
+        "school.svg",
+        "briefcase.svg",
+        "shield.svg",
+        "puzzle.svg",
+        "bus.svg",
+        "cog.svg",
+        "hammer.svg",
+        "contact.svg",
+        "printer.svg",
+        "message-circle-heart.svg",
+        "backpack.svg"
+      ],
+      "files": [
+        {
+          "path": "assets/Icons/home.svg",
+          "id": "6489372fe489189cccca794cfc886f6a"
+        },
+        {
+          "path": "assets/Icons/users.svg",
+          "id": "6f3bc19e9cf42516bd16332b0135a9ee"
+        },
+        {
+          "path": "assets/Icons/user.svg",
+          "id": "d51d6d8509af06335834718e31379292"
+        },
+        {
+          "path": "assets/Icons/book-open.svg",
+          "id": "387e28ab03dd6eea3df854012ef6b518"
+        },
+        {
+          "path": "assets/Icons/graduation-cap.svg",
+          "id": "83b3d800c16a05821cc8d3517bd0b51b"
+        },
+        {
+          "path": "assets/Icons/utensils.svg",
+          "id": "70f98a9a3c318ed9d0cd692c79271b2a"
+        },
+        {
+          "path": "assets/Icons/wallet.svg",
+          "id": "3b9148832bfcd0fe93a4e68a61677b59"
+        },
+        {
+          "path": "assets/Icons/banknote.svg",
+          "id": "262ecf139f2731346d040ec10a249f12"
+        },
+        {
+          "path": "assets/Icons/receipt.svg",
+          "id": "8c09b1ba7cdabbff18c1df138c6a5943"
+        },
+        {
+          "path": "assets/Icons/calendar.svg",
+          "id": "661ac6d46c4d37881b09a6370ecc241c"
+        },
+        {
+          "path": "assets/Icons/clipboard-list.svg",
+          "id": "d7775600591495636dbe14a2cf776fde"
+        },
+        {
+          "path": "assets/Icons/file-text.svg",
+          "id": "5949f95e3acc89f3ed951c4ba699aa66"
+        },
+        {
+          "path": "assets/Icons/check.svg",
+          "id": "2fe673f9217822edf18b7845403e4226"
+        },
+        {
+          "path": "assets/Icons/x.svg",
+          "id": "1a78da328085f482e94f2c621e701509"
+        },
+        {
+          "path": "assets/Icons/plus.svg",
+          "id": "e05cea0662af67755ba03b09c4e4e783"
+        },
+        {
+          "path": "assets/Icons/minus.svg",
+          "id": "79666d56e4da57553e6f0eafa197864b"
+        },
+        {
+          "path": "assets/Icons/search.svg",
+          "id": "aeafb31209028ce0f5621d870394ed63"
+        },
+        {
+          "path": "assets/Icons/download.svg",
+          "id": "caea136864034ace864ee25595dac4f6"
+        },
+        {
+          "path": "assets/Icons/wifi-off.svg",
+          "id": "8d0a5a15ad2fbf94c5de11855746ad41"
+        },
+        {
+          "path": "assets/Icons/refresh-cw.svg",
+          "id": "991fa864d9088eed69304f9a93057c52"
+        },
+        {
+          "path": "assets/Icons/triangle-alert.svg",
+          "id": "ae0cc11ba1a7f03b583a4b57cee9e7c9"
+        },
+        {
+          "path": "assets/Icons/circle-check.svg",
+          "id": "2ee8d93b103f193c1ee398256cb10838"
+        },
+        {
+          "path": "assets/Icons/circle-x.svg",
+          "id": "753ca5c1196f14fa37aaf6ba314740de"
+        },
+        {
+          "path": "assets/Icons/info.svg",
+          "id": "5fab206cf9f7bc38f1db03636db89c4a"
+        },
+        {
+          "path": "assets/Icons/chevron-right.svg",
+          "id": "de0f389bf440b8426c7b876c464d52aa"
+        },
+        {
+          "path": "assets/Icons/chevron-left.svg",
+          "id": "9a545e3e2f24d2814171effadc657bfa"
+        },
+        {
+          "path": "assets/Icons/map-pin.svg",
+          "id": "d315b1d4e1a9cd02b03a5b864d238649"
+        },
+        {
+          "path": "assets/Icons/heart-pulse.svg",
+          "id": "cbec0e57bd9641f81ee30d2b44e9acca"
+        },
+        {
+          "path": "assets/Icons/trophy.svg",
+          "id": "da0354e94eaf7fe73ebac530509ea872"
+        },
+        {
+          "path": "assets/Icons/wrench.svg",
+          "id": "89c5de60a407593456676dab6bb14b30"
+        },
+        {
+          "path": "assets/Icons/sprout.svg",
+          "id": "ee9db0bc8147a614b10e98ba78cef8b7"
+        },
+        {
+          "path": "assets/Icons/hand-heart.svg",
+          "id": "c6cab39ce3a2df5d36678ff01011d006"
+        },
+        {
+          "path": "assets/Icons/camera.svg",
+          "id": "c0fe9a0a892e37d41ec0368d5d174428"
+        },
+        {
+          "path": "assets/Icons/settings.svg",
+          "id": "cbd1272a04d67ea2ef2a36a17c47fabc"
+        },
+        {
+          "path": "assets/Icons/lock.svg",
+          "id": "db255c82d7b4e2b7ae42bd91202bf773"
+        },
+        {
+          "path": "assets/Icons/bar-chart-3.svg",
+          "id": "1a2c33c0d40155ae8d79b333c0d3ab9b"
+        },
+        {
+          "path": "assets/Icons/scale.svg",
+          "id": "b8156af5381f10ff51f5fcb7da9756c3"
+        },
+        {
+          "path": "assets/Icons/package.svg",
+          "id": "269227a2d6fa66796ec900551b1ffb18"
+        },
+        {
+          "path": "assets/Icons/truck.svg",
+          "id": "49c0871a46e8947f2e1c8dbe7e51d436"
+        },
+        {
+          "path": "assets/Icons/school.svg",
+          "id": "c1a5769e22bed95bdd73744c7f48bb1e"
+        },
+        {
+          "path": "assets/Icons/briefcase.svg",
+          "id": "9786053846f29bac9700d3f015ecd1d5"
+        },
+        {
+          "path": "assets/Icons/shield.svg",
+          "id": "021f88e6904b05bb2ea055a505c0fc52"
+        },
+        {
+          "path": "assets/Icons/puzzle.svg",
+          "id": "d8838db6bb2a9f20d6c0ee0be90c8a79"
+        },
+        {
+          "path": "assets/Icons/bus.svg",
+          "id": "0ac53b6075210bca4fd7ad80f24fc21c"
+        },
+        {
+          "path": "assets/Icons/cog.svg",
+          "id": "6a1892c03dfea18a2ea1fb8fe43dc01a"
+        },
+        {
+          "path": "assets/Icons/hammer.svg",
+          "id": "72febd97925476f2c33643e7cb07e2e4"
+        },
+        {
+          "path": "assets/Icons/contact.svg",
+          "id": "9aacc416c6df7fa1a525a87c360d110a"
+        },
+        {
+          "path": "assets/Icons/printer.svg",
+          "id": "c8196c5daeb6bad877112b74c2c8d3d8"
+        },
+        {
+          "path": "assets/Icons/message-circle-heart.svg",
+          "id": "4e11e6d13d04b11db554cc38f388bc8f"
+        },
+        {
+          "path": "assets/Icons/backpack.svg",
+          "id": "8d1b01f5f7b5ef8e528c863fe22a2ceb"
+        }
+      ]
+    }
+  ],
+  "storage": {
+    "files": {
+      "assets/Icons/backpack.svg": {
+        "store": "blob",
+        "id": "8d1b01f5f7b5ef8e528c863fe22a2ceb",
+        "bytes": 442,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/banknote.svg": {
+        "store": "blob",
+        "id": "262ecf139f2731346d040ec10a249f12",
+        "bytes": 320,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/bar-chart-3.svg": {
+        "store": "blob",
+        "id": "1a2c33c0d40155ae8d79b333c0d3ab9b",
+        "bytes": 296,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/book-open.svg": {
+        "store": "blob",
+        "id": "387e28ab03dd6eea3df854012ef6b518",
+        "bytes": 306,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/briefcase.svg": {
+        "store": "blob",
+        "id": "9786053846f29bac9700d3f015ecd1d5",
+        "bytes": 303,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/bus.svg": {
+        "store": "blob",
+        "id": "0ac53b6075210bca4fd7ad80f24fc21c",
+        "bytes": 495,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/calendar.svg": {
+        "store": "blob",
+        "id": "661ac6d46c4d37881b09a6370ecc241c",
+        "bytes": 320,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/camera.svg": {
+        "store": "blob",
+        "id": "c0fe9a0a892e37d41ec0368d5d174428",
+        "bytes": 335,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/check.svg": {
+        "store": "blob",
+        "id": "2fe673f9217822edf18b7845403e4226",
+        "bytes": 220,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/chevron-left.svg": {
+        "store": "blob",
+        "id": "9a545e3e2f24d2814171effadc657bfa",
+        "bytes": 219,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/chevron-right.svg": {
+        "store": "blob",
+        "id": "de0f389bf440b8426c7b876c464d52aa",
+        "bytes": 218,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/circle-check.svg": {
+        "store": "blob",
+        "id": "2ee8d93b103f193c1ee398256cb10838",
+        "bytes": 259,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/circle-x.svg": {
+        "store": "blob",
+        "id": "753ca5c1196f14fa37aaf6ba314740de",
+        "bytes": 282,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/clipboard-list.svg": {
+        "store": "blob",
+        "id": "d7775600591495636dbe14a2cf776fde",
+        "bytes": 448,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/cog.svg": {
+        "store": "blob",
+        "id": "6a1892c03dfea18a2ea1fb8fe43dc01a",
+        "bytes": 678,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/contact.svg": {
+        "store": "blob",
+        "id": "9aacc416c6df7fa1a525a87c360d110a",
+        "bytes": 423,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/download.svg": {
+        "store": "blob",
+        "id": "caea136864034ace864ee25595dac4f6",
+        "bytes": 339,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/file-text.svg": {
+        "store": "blob",
+        "id": "5949f95e3acc89f3ed951c4ba699aa66",
+        "bytes": 385,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/graduation-cap.svg": {
+        "store": "blob",
+        "id": "83b3d800c16a05821cc8d3517bd0b51b",
+        "bytes": 399,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/hammer.svg": {
+        "store": "blob",
+        "id": "72febd97925476f2c33643e7cb07e2e4",
+        "bytes": 446,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/hand-heart.svg": {
+        "store": "blob",
+        "id": "c6cab39ce3a2df5d36678ff01011d006",
+        "bytes": 509,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/heart-pulse.svg": {
+        "store": "blob",
+        "id": "cbec0e57bd9641f81ee30d2b44e9acca",
+        "bytes": 400,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/home.svg": {
+        "store": "blob",
+        "id": "6489372fe489189cccca794cfc886f6a",
+        "bytes": 304,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/info.svg": {
+        "store": "blob",
+        "id": "5fab206cf9f7bc38f1db03636db89c4a",
+        "bytes": 283,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/lock.svg": {
+        "store": "blob",
+        "id": "db255c82d7b4e2b7ae42bd91202bf773",
+        "bytes": 293,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/map-pin.svg": {
+        "store": "blob",
+        "id": "d315b1d4e1a9cd02b03a5b864d238649",
+        "bytes": 291,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/message-circle-heart.svg": {
+        "store": "blob",
+        "id": "4e11e6d13d04b11db554cc38f388bc8f",
+        "bytes": 358,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/minus.svg": {
+        "store": "blob",
+        "id": "79666d56e4da57553e6f0eafa197864b",
+        "bytes": 213,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/package.svg": {
+        "store": "blob",
+        "id": "269227a2d6fa66796ec900551b1ffb18",
+        "bytes": 423,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/plus.svg": {
+        "store": "blob",
+        "id": "e05cea0662af67755ba03b09c4e4e783",
+        "bytes": 240,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/printer.svg": {
+        "store": "blob",
+        "id": "c8196c5daeb6bad877112b74c2c8d3d8",
+        "bytes": 393,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/puzzle.svg": {
+        "store": "blob",
+        "id": "d8838db6bb2a9f20d6c0ee0be90c8a79",
+        "bytes": 1060,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/receipt.svg": {
+        "store": "blob",
+        "id": "8c09b1ba7cdabbff18c1df138c6a5943",
+        "bytes": 366,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/refresh-cw.svg": {
+        "store": "blob",
+        "id": "991fa864d9088eed69304f9a93057c52",
+        "bytes": 382,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/scale.svg": {
+        "store": "blob",
+        "id": "b8156af5381f10ff51f5fcb7da9756c3",
+        "bytes": 424,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/school.svg": {
+        "store": "blob",
+        "id": "c1a5769e22bed95bdd73744c7f48bb1e",
+        "bytes": 421,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/search.svg": {
+        "store": "blob",
+        "id": "aeafb31209028ce0f5621d870394ed63",
+        "bytes": 259,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/settings.svg": {
+        "store": "blob",
+        "id": "cbd1272a04d67ea2ef2a36a17c47fabc",
+        "bytes": 810,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/shield.svg": {
+        "store": "blob",
+        "id": "021f88e6904b05bb2ea055a505c0fc52",
+        "bytes": 367,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/sprout.svg": {
+        "store": "blob",
+        "id": "ee9db0bc8147a614b10e98ba78cef8b7",
+        "bytes": 466,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/triangle-alert.svg": {
+        "store": "blob",
+        "id": "ae0cc11ba1a7f03b583a4b57cee9e7c9",
+        "bytes": 332,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/trophy.svg": {
+        "store": "blob",
+        "id": "da0354e94eaf7fe73ebac530509ea872",
+        "bytes": 510,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/truck.svg": {
+        "store": "blob",
+        "id": "49c0871a46e8947f2e1c8dbe7e51d436",
+        "bytes": 466,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/user.svg": {
+        "store": "blob",
+        "id": "d51d6d8509af06335834718e31379292",
+        "bytes": 285,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/users.svg": {
+        "store": "blob",
+        "id": "6f3bc19e9cf42516bd16332b0135a9ee",
+        "bytes": 373,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/utensils.svg": {
+        "store": "blob",
+        "id": "70f98a9a3c318ed9d0cd692c79271b2a",
+        "bytes": 337,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/wallet.svg": {
+        "store": "blob",
+        "id": "3b9148832bfcd0fe93a4e68a61677b59",
+        "bytes": 371,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/wifi-off.svg": {
+        "store": "blob",
+        "id": "8d0a5a15ad2fbf94c5de11855746ad41",
+        "bytes": 493,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/wrench.svg": {
+        "store": "blob",
+        "id": "89c5de60a407593456676dab6bb14b30",
+        "bytes": 357,
+        "type": "image/svg+xml"
+      },
+      "assets/Icons/x.svg": {
+        "store": "blob",
+        "id": "1a78da328085f482e94f2c621e701509",
+        "bytes": 244,
+        "type": "image/svg+xml"
+      },
+      "assets/Logos/chitenge-strip.svg": {
+        "store": "blob",
+        "id": "0aadcdc04910d337298774a55cbc14ba",
+        "bytes": 1005,
+        "type": "image/svg+xml"
+      },
+      "assets/Logos/cyp-eat-icon.svg": {
+        "store": "blob",
+        "id": "690e4aba3e28fc5dbadc686660d34968",
+        "bytes": 2754,
+        "type": "image/svg+xml"
+      },
+      "assets/Logos/cyp-eat.svg": {
+        "store": "blob",
+        "id": "c5468df09d17beb9fa0ec53fc780331f",
+        "bytes": 1633,
+        "type": "image/svg+xml"
+      },
+      "assets/Logos/cyp-edu-icon.svg": {
+        "store": "blob",
+        "id": "33da4b5db6835d111fe195290c28e83b",
+        "bytes": 2067,
+        "type": "image/svg+xml"
+      },
+      "assets/Logos/cyp-edu.svg": {
+        "store": "blob",
+        "id": "aef6b465c6d008f111868b95a85b0c1b",
+        "bytes": 1662,
+        "type": "image/svg+xml"
+      },
+      "assets/Logos/cyp-fin-icon.svg": {
+        "store": "blob",
+        "id": "aeff6be1149adf3716535dea21f6b19f",
+        "bytes": 2009,
+        "type": "image/svg+xml"
+      },
+      "assets/Logos/cyp-fin.svg": {
+        "store": "blob",
+        "id": "2e490cbac25ac598b1184a1f9057ea2a",
+        "bytes": 1621,
+        "type": "image/svg+xml"
+      },
+      "assets/Logos/cyp-seal.png": {
+        "store": "blob",
+        "id": "f66953c958e243bcf4c122eb5f6f40c7",
+        "bytes": 265581,
+        "type": "image/png"
+      }
+    },
+    "blobBytesUsed": 297495
+  }
+}

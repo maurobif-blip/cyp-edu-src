@@ -1,0 +1,6 @@
+const { chromium } = require('playwright'); const OUT = '/home/claude/deck1/shots/';
+(async () => { const b = await chromium.launch(); const ctx = await b.newContext({ viewport: { width: 393, height: 800 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 }); const p = await ctx.newPage();
+  await p.goto('file:///home/claude/demo/cicetekelo-records-DEMO.html'); await p.waitForTimeout(1200); await p.click('.stile:has-text("Bernard")'); await p.waitForTimeout(300); if (await p.$('#pinin')) { await p.fill('#pinin', await p.evaluate(() => pinValue())); await p.click('form[data-form=pinlogin] button.pri'); await p.waitForTimeout(500); }
+  await p.evaluate(() => { for (const e of document.querySelectorAll('body *')) { if (/^Guided tour/.test((e.innerText || '').trim()) && e.offsetHeight < 80 && e.offsetHeight > 20 && e.offsetWidth > 300) { e.style.display = 'none'; break; } } });
+  await p.evaluate(() => { const h = [...document.querySelectorAll('h2, .sec, p')].find(e => /To do in your section/.test(e.innerText)); if (h) { h.scrollIntoView({ block: 'start' }); window.scrollBy(0, -90); } }); await p.waitForTimeout(300);
+  await p.screenshot({ path: OUT + 'home-todo.png' }); await b.close(); })();

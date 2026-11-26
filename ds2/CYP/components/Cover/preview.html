@@ -1,0 +1,48 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CYP</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--surface); color: var(--ink); overflow: hidden; }
+  .cover { position: relative; height: 288px; overflow: hidden; }
+  .art { position: absolute; top: 0; left: 480px; width: 480px; height: 288px; }
+  .art svg { display: block; width: 480px; height: 288px; }
+  .blue { fill: var(--blue); } .navy { fill: var(--navy); } .sky { fill: var(--blue-sky); } .yellow { fill: var(--yellow); }
+  .blk { rx: var(--radius-0); }
+  .zig { fill: none; stroke-width: 8px; stroke-linejoin: miter; }
+  .zig.s { stroke: var(--blue-sky); } .zig.y { stroke: var(--yellow); }
+  .words { position: absolute; left: var(--space-6); bottom: var(--space-6); max-width: 440px; }
+  .name { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 120px; line-height: .9; color: var(--ink); }
+  .tag { margin: var(--space-2) 0 0 6px; font-family: var(--font-text); font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      blue 192x288, full height (the app bar and cover ground, the largest) / navy 288x192 bleeding off the top and right / blue-sky 144x96 (the seal blue) / yellow disc 96 across (the date disc), once
+  arrangement a flush modular grid with square corners, as the report sets its result blocks: no gutters, blocks meet on the 96px lines
+  pattern     chevrons, from "the zig-zag band of the app wordmarks": four zig-zag rules over the navy block, three in blue-sky and one in yellow
+  scales      sides in multiples of space-12 (48px); chevron pitch space-12, rise space-6, row gap space-8, stroke space-2; corners radius-0; disc radius-disc (r = half of 96)
+-->
+<rect class="blue blk" x="0" y="0" width="192" height="288"/>
+<rect class="navy blk" x="192" y="0" width="288" height="192"/>
+<rect class="sky blk" x="192" y="192" width="144" height="96"/>
+<circle class="yellow" cx="408" cy="240" r="48"/>
+<polyline class="zig s" points="192,56 216,32 240,56 264,32 288,56 312,32 336,56 360,32 384,56 408,32 432,56 456,32 480,56"/>
+<polyline class="zig y" points="192,88 216,64 240,88 264,64 288,88 312,64 336,88 360,64 384,88 408,64 432,88 456,64 480,88"/>
+<polyline class="zig s" points="192,120 216,96 240,120 264,96 288,120 312,96 336,120 360,96 384,120 408,96 432,120 456,96 480,120"/>
+<polyline class="zig s" points="192,152 216,128 240,152 264,128 288,152 312,128 336,152 360,128 384,152 408,128 432,152 456,128 480,152"/>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">CYP</h1>
+<p class="tag">Cicetekelo Youth Project, Ndola</p>
+</div>
+</div>
+</body>
+</html>

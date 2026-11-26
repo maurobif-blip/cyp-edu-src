@@ -1,0 +1,16 @@
+const { chromium } = require('playwright');
+(async () => {
+  const b = await chromium.launch(); const errs = [];
+  const mk = async who => { const p = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); p.on('dialog', d => d.accept()); await p.goto('file:///home/claude/demo/cicetekelo-records-DEMO.html'); await p.waitForTimeout(900); await p.click(`.stile:has-text("${who}")`); await p.waitForTimeout(400); return p; };
+  const go = async (p, h) => { await p.evaluate(h => location.hash = h, h); await p.waitForTimeout(450); };
+  for (const who of ['Clement', 'Bernard', 'Iness', 'Chippo']) { const p = await mk(who); await go(p, '#/visits'); console.log(who, await p.evaluate(() => [myTeam(), document.querySelector('.vnow').innerText.replace(/\n/g, ' '), [...document.querySelectorAll('#vchoose .seg.big a')].map(x => x.innerText + (x.classList.contains('on') ? '*' : '')).join(' | '), [...document.querySelectorAll('#vchoose .cbtn b')].map(x => x.innerText).join(' | ')])); if (who === 'Clement') { await p.click('#vchoose .seg.big a:has-text("Others")'); await p.waitForTimeout(300); console.log('others view', await p.evaluate(() => [document.querySelector('.vnow').innerText.replace(/\n/g, ' '), location.hash])); for (const t of ['done', 'need', 'plan', 'actions']) await go(p, '#/visits?vt=Others&vtab=' + t); await go(p, '#/visit/new'); console.log('form teams', await p.evaluate(() => [...document.querySelectorAll('select[name=team] option')].map(o => o.textContent).join(' | '))); } await p.context().close(); }
+  const q = await mk('Chippo'); await go(q, '#/counseling');
+  await q.evaluate(() => { const d = today(); S.attendance[d] = S.attendance[d] || {}; S.children.filter(c => c.section === 'Nkwazi' && isCurrent(c)).slice(0, 6).forEach(c => S.attendance[d][c.id] = 'P'); save(); });
+  await q.selectOption('form[data-form=session] select[name=type]', 'Group'); await q.selectOption('form[data-form=session] select[name=centre]', 'Nkwazi'); await q.waitForTimeout(300);
+  console.log('group list', await q.evaluate(() => [document.querySelectorAll('.sesslist label').length, document.querySelector('#sessgroup span').innerText]));
+  await q.click('.sesslist label:nth-child(1) input'); await q.click('.sesslist label:nth-child(3) input'); await q.fill('#sessq', 'ban'); await q.waitForTimeout(300); await q.click('.sesslist label:nth-child(1) input'); await q.waitForTimeout(200);
+  console.log('ticked', await q.evaluate(() => [UI.sessKids.size, document.querySelector('#sessgroup span').innerText, document.activeElement.id])); await q.screenshot({ path: 'shots/G1.png' });
+  await q.fill('form[data-form=session] input[name=topic]', 'Test topic'); await q.click('form[data-form=session] button.pri'); await q.waitForTimeout(400);
+  console.log('saved', await q.evaluate(() => { const s = S.sessions[S.sessions.length - 1]; return [s.type, s.centre, s.children.length, s.topic]; }), await q.evaluate(() => document.querySelector('.it .w span') && [...document.querySelectorAll('.it .w')].map(x => x.innerText.replace(/\n/g, ' ')).find(t => /more/.test(t))));
+  console.log('errors', errs.slice(0, 6)); await b.close();
+})();

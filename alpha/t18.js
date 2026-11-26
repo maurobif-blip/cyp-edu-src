@@ -1,0 +1,23 @@
+const { chromium } = require('playwright');
+(async () => {
+  const b = await chromium.launch(); const ctx = await b.newContext({ viewport: { width: 1440, height: 900 }, acceptDownloads: true }); const p = await ctx.newPage(); const errs=[];
+  p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type()==='error') errs.push(m.text()); }); p.on('dialog', d => d.accept());
+  await p.goto('file:///home/claude/demo/cicetekelo-records-DEMO.html'); await p.waitForTimeout(400); await p.click('.stile:has-text("Iness Phiri")');
+  const rows = () => p.evaluate(() => [...document.querySelectorAll('#lattBody tbody tr')].slice(0, 6).map(tr => tr.classList.contains('gsep') ? '[' + tr.innerText.trim() + ']' : tr.querySelector('a').textContent + (tr.querySelector('.att .on') ? ' ✓' : '')).join(' | '));
+  await p.evaluate(() => location.hash = '#/attendance?c=Luigi'); await p.waitForTimeout(300); console.log('before:', await rows());
+  await p.click('#lattBody tbody tr:nth-child(20) [data-lact=day]'); await p.waitForTimeout(150); await p.click('#lattBody tbody tr:nth-child(41) [data-lact=day]'); await p.waitForTimeout(150);
+  console.log('after 2 marks:', await rows()); await p.screenshot({ path: 'shots/O-luigi-day.png' });
+  await p.evaluate(() => location.hash = '#/attendance?c=Luigi&ld=' + addDays(today(), -4)); await p.waitForTimeout(300); console.log('past day:', await rows());
+  await p.evaluate(() => location.hash = '#/attendance?c=Luigi&lt=day'); await p.waitForTimeout(300);
+  console.log('month grid:', await p.evaluate(() => [...document.querySelectorAll('.lgrid tbody tr')].map((tr, i) => tr.classList.contains('gsep') ? i + ':[' + tr.querySelector('th').textContent + ']' : '').filter(Boolean).join(' ')));
+  await p.screenshot({ path: 'shots/O-luigi-grid.png' });
+  await p.click('.lgrid tbody tr:nth-child(5) td.lc.td'); await p.waitForTimeout(100);
+  await p.evaluate(() => location.hash = '#/attendance?c=Minsundu'); await p.waitForTimeout(300);
+  const ar = () => p.evaluate(() => [...document.querySelectorAll('#attTable tbody tr')].slice(0, 5).map(tr => tr.classList.contains('gsep') ? '[' + tr.innerText.trim() + ']' : tr.querySelector('a').textContent + ':' + ((tr.querySelector('.att .on') || {}).textContent || '-')).join(' | '));
+  console.log('minsundu before:', await ar());
+  await p.click('#attTable tbody tr:nth-child(9) button.P'); await p.waitForTimeout(150); await p.click('#attTable tbody tr:nth-child(4) button.A'); await p.waitForTimeout(150);
+  console.log('minsundu after:', await ar()); await p.screenshot({ path: 'shots/O-minsundu.png' });
+  await p.evaluate(() => location.hash = '#/attendance?c=Minsundu&d=' + addDays(today(), -5)); await p.waitForTimeout(300); console.log('minsundu past:', await ar(), await p.evaluate(() => [...document.querySelectorAll('#attTable tr.gsep')].map(x => x.innerText).join(' / ')));
+  const [dl] = await Promise.all([p.waitForEvent('download'), p.click('[data-k=attmonth]')]); console.log(dl.suggestedFilename());
+  console.log('errors', errs); await b.close();
+})();

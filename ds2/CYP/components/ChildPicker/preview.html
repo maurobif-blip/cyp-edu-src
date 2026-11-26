@@ -1,0 +1,22 @@
+<!-- @dsCard group="Apps" height=670 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ChildPicker - preview</title>
+<style>
+body{padding:var(--space-4)}
+</style>
+</head>
+<body>
+<div class="cyp-picker" style="width:360px">
+ <div class="cyp-field"><label for="cp1">Register</label><select class="cyp-input" id="cp1"><option>Luigi, drop-in</option><option>Minsundu</option><option>Nkwazi Centre</option></select></div>
+ <fieldset class="cyp-choice"><legend>Show</legend><div class="cyp-choice__row"><label><input type="radio" name="cpg" checked><span>All</span></label><label><input type="radio" name="cpg"><span>Girls</span></label><label><input type="radio" name="cpg"><span>Boys</span></label></div></fieldset>
+ <div class="cyp-field"><label for="cp2">Name</label><input class="cyp-input" id="cp2" type="search" placeholder=""></div>
+ <div class="cyp-picker__bar"><span class="small-strong">3 ticked</span><button class="cyp-btn">Tick all 24</button><button class="cyp-btn">Untick all</button></div>
+ <fieldset class="cyp-checklist cyp-picker__list"><legend class="cyp-sr">Children</legend><div class="cyp-checklist__rows">
+  <label><input type="checkbox" checked><span class="cyp-avatar" aria-hidden="true">SN</span>Sample name</label><label><input type="checkbox" checked><span class="cyp-avatar" aria-hidden="true">SN</span>Sample name</label><label><input type="checkbox" checked><span class="cyp-avatar" aria-hidden="true">SN</span>Sample name</label><label><input type="checkbox"><span class="cyp-avatar" aria-hidden="true">SN</span>Sample name</label><label><input type="checkbox"><span class="cyp-avatar" aria-hidden="true">SN</span>Sample name</label>
+ </div></fieldset>
+</div>
+</body>
+</html>
